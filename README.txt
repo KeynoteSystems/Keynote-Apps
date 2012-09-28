@@ -1,3 +1,3 @@
 Evaluating the use of GitHub for hosting Keynote API projects from both internal sources and customers.
 
-Eventually this document will outline how contributors should organize seperate applications.
+To add a new application create a new folder with your source files.  For a simple example look at the Google Docs Dashboard example application.
