@@ -1,5 +1,10 @@
-The Google Docs Dashboard is a script designed to work with a Google spreadsheet.  It will query the API using your API key and load a dashboard in the host spreadsheet. Please note that this will also work with Google Drive if you have converted to that product from Google Docs.
+TThis examples shows how to build a self-updating Google spreadsheet that displays your Keynote performance data. The JavaScript functions will take a blank worksheet and populate it with a table of performance data for all of the Keynote measurements slots visible to your API key. This includes the following information for each measurement slot:
 
-For more details check out the wiki documentation.
+-Average total network time over the last 5 minutes, 15 minutes, 1 hour and 24 hours
+-Average availability over the last 5 minutes, 15 minutes, 1 hour and 24 hours 
+
+Please note that this will also work with Google Drive if you have converted to that product from Google Docs.
+
+For a detailed how to, check out the wiki documentation:
 
 https://github.com/KeynoteSystems/Keynote-Apps/wiki/Google-Docs-Dashboard
