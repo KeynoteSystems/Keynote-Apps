@@ -4,7 +4,7 @@ function KeynoteDashboard()
     var api_url = "https://api.keynote.com/keynote/api/getdashboarddata";
  
     /* Change this to your API key */
-    var api_key = "";
+    var api_key = "xxxxx";
  
     /*Build and issue the Request URL, starts with base URL, and then adds your key and any optional parameters*/
     var api_call = UrlFetchApp.fetch(api_url + "?api_key=" + api_key + "&format=xml&type=list").getContentText();
