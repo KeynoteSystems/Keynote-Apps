@@ -1,7 +1,7 @@
 function KeynoteDashboard()
 {
-    /* Change this to your API key */
-    var api_key = '8a4bae76-8992-3a8d-b826-17e87ed0224f';
+    //* Insert your API Key here*/
+    var api_key = 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx';
   
     var sheet = SpreadsheetApp.getActiveSpreadsheet();
   
