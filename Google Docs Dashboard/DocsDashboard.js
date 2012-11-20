@@ -1,54 +1,61 @@
 function KeynoteDashboard()
 {
-    //Base API URL request
-    var api_url = "https://api.keynote.com/keynote/api/getdashboarddata";
- 
-    /* Change this to your API key */
-    var api_key = "xxxxx";
- 
-    /*Build and issue the Request URL, starts with base URL, and then adds your key and any optional parameters*/
-    var api_call = UrlFetchApp.fetch(api_url + "?api_key=" + api_key + "&format=xml&type=list").getContentText();
-   
-    //Parse the XML and place the spreadsheet into a container
-    var xml = Xml.parse(api_call, true), sheetData = SpreadsheetApp.getActiveSpreadsheet();
-   
-    //Call the function to create the spreadsheet headers
-    setSheetHeaders(sheetData);
+    /* Insert your API Key here*/
+    var api_key = 'xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx';
+  
+    var sheet = SpreadsheetApp.getActiveSpreadsheet();
+  
+    /* Setup spreadsheet headers */
+    var headers = [['Slot Alias', '5 mins', '15 mins', '1 hr', '24 hrs', '5 mins', '15 mins', '1 hr', '24 hrs']];
+    sheet.getRange('A1:I1').setValues(headers);
+
+    /* Initialise counter */
+    var row = 1;
     
-    //Retrieves all the measurements blocks for TxP, which is the first group in the 'product' aray, thus the index of 0
-    var measurements = xml.getElement().getElements("product")[0].getElements("measurement");
-    
-    //Counter to store which row to write data into, starting at row 2 since row 1 contains headers
-    var counter = 2;
-   
-    //Loop through the measurement container and extract the attributes of interest like performance, availability, and slot alias
-    for (var i in measurements)
-    {
-        var alias = measurements[i].alias.getText();
-        var perf  = measurements[i].perf_data.getElements("data_cell"); //each piece of measurement data is stored in an XML tag called 'data_cell'
-        var avail = measurements[i].avail_data.getElements("data_cell");
-        var row   = [[alias, perf[0].getAttribute("value").getValue(),
-                    perf[1].getAttribute("value").getValue(),
-                    perf[2].getAttribute("value").getValue(),
-                    perf[3].getAttribute("value").getValue()]];
+    /* Base API URL request */
+    var api_url = 'https://api.keynote.com/keynote/api/getdashboarddata';
+
+    /* Build and issue the REST call to the API */
+    var api_call = UrlFetchApp.fetch(api_url + '?api_key=' + api_key + '&format=xml').getContentText();
+  
+    /* Parse the returned XML */
+    var xml = Xml.parse(api_call, true);
        
-        var row2  = [[avail[0].getAttribute("value").getValue(),
-                    avail[1].getAttribute("value").getValue(),
-                    avail[2].getAttribute("value").getValue(),
-                    avail[3].getAttribute("value").getValue()]];
-        
-        //Input data into the spreadsheet
-        sheetData.getRange("A"+counter+":E"+counter).setValues(row);
-        sheetData.getRange("F"+counter+":I"+counter).setValues(row2);
-     
-        counter = counter +1;
+    /* Pull all products returned in the XML e.g. ApP, TxP etc. */    
+    var prods = xml.getElement().getElements('product');
+  
+    /* Start loop through all products returned */
+    for (var p in prods)
+    {      
+        /* Get product type */
+        var type = prods[p].getAttribute('id').getValue();
+
+        /* Loop through all measurements returned for current product */
+        var measurements = prods[p].getElements('measurement');
+    
+        /* Extract from each measurement Slot Alias, Performance & Availability values */
+        for (var i in measurements)
+        {
+            row++;
+
+            var alias = measurements[i].alias.getText();
+            var perf  = measurements[i].perf_data.getElements('data_cell');
+            var avail = measurements[i].avail_data.getElements('data_cell');
+            var rows   = [[alias + ' (' + type + ')',
+                          perf[0].getAttribute('value').getValue(),
+                          perf[1].getAttribute('value').getValue(),
+                          perf[2].getAttribute('value').getValue(),
+                          perf[3].getAttribute('value').getValue(),
+                          avail[0].getAttribute('value').getValue(),
+                          avail[1].getAttribute('value').getValue(),
+                          avail[2].getAttribute('value').getValue(),
+                          avail[3].getAttribute('value').getValue()]];
+          
+            /* Input data into spreadsheet */
+            sheet.getRange('A' + row + ':I' + row).setValues(rows);
+        }      
     }
-   
-    sheetData.sort(2, false); //sorts spreadsheet in order of slowest last 5 minutes performance to fastest
-}
-function setSheetHeaders(sheetData)
-{
-	//Setup spreadsheet headers
-    var headers = [["Slot Alias", "5 mins", "15 mins", "1 hr", "24 hrs", "5 mins", "15 mins", "1 hr", "24 hrs"]];  //puts these headers in the first row of the spreadsheet
-    sheetData.getRange("A1:I1").setValues(headers);
+
+    /* Sort data on second column.  Do not sort on first otherwise column headers will move */
+    sheet.sort(2, false);
 }
