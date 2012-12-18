@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Keynote - API</title>
+    <link rel=stylesheet href="//fonts.googleapis.com/css?family=Open+Sans:400,300,700,600">
+    <!-- Bootstrap -->
+    <link href="/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+    </style>
+    <link href="/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+    <link href="/bootstrap/css/custom.css" rel="stylesheet">
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/jquery-ui.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script src="/js/widget.js"></script>
+  </head>
+  <body>
+    <?php echo $this->render('navbar.phtml') ?>
+
+    <!-- Container -->
+    <div class="container" id="sortable">
+
+      <?php echo $this->layout()->content ?>
+
+      <footer>
+        <p>&copy; Keynote Systems, Inc. 2012</p>
+      </footer>
+
+      <!-- Modal Window -->
+      <div id="example" class="modal hide fade in" style="display: none; ">
+        <form id="modal-form" action="/save" data-remote="true" method="post">
+          <div class="modal-header">
+            <a class="close" data-dismiss="modal">x</a>
+            <h3>Enter new API Key</h3>
+          </div>
+          <div class="modal-body">
+            <input class="input-xlarge" type="text" name="api_key" placeholder="API KEY">
+          </div>
+          <div class="modal-footer">
+            <input type="submit" value="Save" class="btn btn-primary" />
+            <a href="#" class="btn" data-dismiss="modal">Close</a>
+          </div>
+        </form>
+      </div>
+      <!-- End Modal -->
+
+    </div>
+    <!-- /container -->
+
+    <script>
+    $(function ()
+    		{ $("#topMenu").popover({placement: 'bottom', trigger: 'hover'});
+    		});
+    </script>
+  </body>
+</html>

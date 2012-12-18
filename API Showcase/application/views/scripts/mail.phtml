@@ -1,0 +1,84 @@
+<?php
+        $time = microtime();
+        $time = explode(' ', $time);
+        $time = $time[1] + $time[0];
+        $start = $time;
+?>
+<html>
+<head>
+<style type="text/css">
+body,html,table {
+	font-size: 11px;
+    font-family: Arial;
+}
+
+h3 {
+	font-size: 14px;
+    font-family: Arial;
+}
+
+table {
+    border-width: 1px;
+    border-color: #E9E7E0;
+    border-style: solid;
+    border-collapse: collapse;
+}
+
+th {
+	background-color: #F9F8F0;
+}
+</style>
+</head>
+<body>
+<?php echo $this->layout()->content ?>
+
+<?php
+$time = microtime();
+$time = explode(' ', $time);
+$time = $time[1] + $time[0];
+$finish = $time;
+$total_time = round(($finish - $start), 4);
+echo 'Report generated in '.$total_time.' seconds.';
+?>
+<h4>Performance</h4>
+<p>Average time for full page(s) download.  Data is compared to last 28 days of history</p>
+<table cellpadding="5">
+<tr bgcolor="#FFFF99">
+<td width="150">Yellow</td><td>15% - 25% above last 28 days</td>
+</tr>
+<tr bgcolor="#FF9999">
+<td>Red</td><td>&gt;25% above last 28 days</td>
+</tr>
+</table>
+<h4>Availability</h4>
+<p>Average percentage of successful measurements during the period</p>
+<table cellpadding="5">
+<tr bgcolor="#FFFF99">
+<td width="150">Yellow</td><td>&lt;99.5%</td>
+</tr>
+<tr bgcolor="#FF9999">
+<td>Red</td><td>&gt;98%</td>
+</tr>
+</table>
+<h4>Objects</h4>
+<p>Average Objects downloaded.  Data is compared to last 28 days of history</p>
+<table cellpadding="5">
+<tr bgcolor="#FFFF99">
+<td width="150">Yellow</td><td>15% - 25% above last 28 days</td>
+</tr>
+<tr bgcolor="#FF9999">
+<td>Red</td><td>&gt;25% above last 28 days</td>
+</tr>
+</table>
+<h4>Bytes Downloaded</h4>
+<p>Average bytes downloaded.  Data is compared to last 28 days of history</p>
+<table cellpadding="5">
+<tr bgcolor="#FFFF99">
+<td width="150">Yellow</td><td>15% - 25% above last 28 days</td>
+</tr>
+<tr bgcolor="#FF9999">
+<td>Red</td><td>&gt;25% above last 28 days</td>
+</tr>
+</table>
+</body>
+</html>

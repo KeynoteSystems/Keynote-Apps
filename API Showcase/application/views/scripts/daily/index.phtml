@@ -1,0 +1,137 @@
+<h3>Performance</h3>
+<table class="table table-condensed table-bordered table-striped">
+<?php
+$displayDate = '<th>Alias</th>';
+for ($i = 7; $i >= 1; $i--) {
+    $date = strtotime(date("Y-m-d", strtotime($this->currentDay)) . " -" . $i ." day");
+    $displayDate .= '<th class="right">' . date('j M', $date) . '</th>';
+}
+
+$displayDate .='<th style="text-align:right">28 Days</th>' . PHP_EOL;
+$displayDate .='<th style="text-align:right">21 Days</th>' . PHP_EOL;
+$displayDate .='<th style="text-align:right">14 Days</th>' . PHP_EOL;
+$displayDate .='<th style="text-align:right">7 Days</th>' . PHP_EOL;
+
+echo '<tr>' . PHP_EOL . $displayDate . '</tr>' . PHP_EOL;
+
+foreach ($this->perfData as $a => $p) {
+    if (strstr($a, 'Total Time')) {
+        $avg[] = $p[7]['perf'];
+    }
+    if (strstr($a, 'Object Count')) {
+        $avgObj[] = $p[7]['objects'];
+    }
+    if (strstr($a, 'Average Bytes')) {
+        $avgBytes[] = $p[7]['bytes'];
+    }
+}
+
+$c = 0;
+
+foreach ($this->perfData as $a => $p) {
+    if (strstr($a, 'Total Time')) {
+        $a = str_replace(' - Total Time (seconds)[Geo Mean]', '', $a);
+
+        echo '<tr>' . PHP_EOL . '<td>' . $a . '</td>' . PHP_EOL;
+        $getAvg = $avg[$c];
+        $c++;
+        foreach ($p as $pd) {
+            $cellColor = '';
+            if ($pd['perf'] != '-' && $getAvg != '-') {
+                if (($pd['perf'] - $getAvg) / $pd['perf'] *100 >= 15) {
+                    $cellColor = '#FFFF99; font-weight: bold';
+                }
+                if (($pd['perf'] - $getAvg) / $pd['perf'] *100 >= 25) {
+                    $cellColor = '#FF9999; font-weight: bold';
+                }
+            }
+
+            echo '<td style="text-align:right; background-color:' . $cellColor . '">' . $pd['perf'] . '</td>' . PHP_EOL;
+        }
+        echo '</tr>' . PHP_EOL;
+    }
+}
+
+?>
+</table>
+<h3>Availability</h3>
+<table class="table table-condensed table-bordered table-striped">
+<?php
+echo $displayDate;
+foreach ($this->perfData as $a => $p) {
+    if (strstr($a, 'Total Time')) {
+        $a = str_replace(' - Total Time (seconds)[Geo Mean]', '', $a);
+        echo '<tr><td>' . $a . '</td>';
+        foreach ($p as $pd) {
+            $cellColor = '';
+            if ($pd['avail'] < $this->avail_warn && $pd['avail'] != '-') $cellColor = '#FFFF99; font-weight: bold';
+            if ($pd['avail'] < $this->avail_crit && $pd['avail'] != '-') $cellColor = '#FF9999; font-weight: bold';
+            echo '<td class="right" style="text-align: right; background-color:' . $cellColor . '">' . $pd['avail'];
+            echo $pd['avail'] == '-' ? '' : '%';
+            echo '</td>';
+        }
+        echo '</tr>';
+    }
+}
+?>
+</table>
+<h3>Objects</h3>
+<table class="table table-condensed table-bordered table-striped">
+<?php
+echo $displayDate;
+$c = 0;
+
+foreach ($this->perfData as $a => $p) {
+    if (strstr($a, 'Object Count')) {
+        $a = str_replace(' - Object Count[Geo Mean]', '', $a);
+        echo '<tr>' . PHP_EOL . '<td>' . $a . '</td>' . PHP_EOL;
+        $getAvg = $avgObj[$c];
+        $c++;
+        foreach ($p as $pd) {
+            $cellColor = '';
+            if ($pd['objects'] != '-' && $getAvg != '-') {
+                if (($pd['objects'] - $getAvg) / $pd['objects'] *100 >= 15) {
+                    $cellColor = '#FFFF99; font-weight: bold';
+                }
+                if (($pd['objects'] - $getAvg) / $pd['objects'] *100 >= 25) {
+                    $cellColor = '#FF9999; font-weight: bold';
+                }
+            }
+
+            echo '<td style="text-align:right; background-color:' . $cellColor . '">' . $pd['objects'] . '</td>' . PHP_EOL;
+        }
+        echo '</tr>' . PHP_EOL;
+    }
+}
+?>
+</table>
+<h3>Bytes Downloaded</h3>
+<table class="table table-condensed table-bordered table-striped">
+<?php
+echo $displayDate;
+$c = 0;
+
+foreach ($this->perfData as $a => $p) {
+    if (strstr($a, 'Average Bytes')) {
+        $a = str_replace(' - Average Bytes Downloaded[Geo Mean]', '', $a);
+
+        echo '<tr>' . PHP_EOL . '<td>' . $a . '</td>' . PHP_EOL;
+        $getAvg = $avgBytes[$c];
+        $c++;
+        foreach ($p as $pd) {
+            $cellColor = '';
+            if ($pd['bytes'] != '-' && $getAvg != '-') {
+                if (($pd['bytes'] - $getAvg) / $pd['bytes'] *100 >= 15) {
+                    $cellColor = '#FFFF99; font-weight: bold';
+                }
+                if (($pd['bytes'] - $getAvg) / $pd['bytes'] *100 >= 25) {
+                    $cellColor = '#FF9999; font-weight: bold';
+                }
+            }
+            echo '<td style="text-align:right; background-color:' . $cellColor . '">' . number_format($pd['bytes']  / 1024, 0, '.',',') . ' Kb</td>' . PHP_EOL;
+        }
+        echo '</tr>' . PHP_EOL;
+    }
+}
+?>
+</table>

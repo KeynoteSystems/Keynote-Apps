@@ -1,0 +1,19 @@
+<div class="errorController">
+    <h2>Error!</h2>
+    <p>
+        <b>Message:</b> <?php echo $this->message ?>
+    </p>
+
+    <h3>Exception information:</h3>
+    <p>
+        <b>Message:</b> <?php echo $this->exception->getMessage() ?>
+    </p>
+
+    <?php if ($this->developerMode) : ?>
+    <h3>Stack trace:</h3>
+    <pre><?php echo $this->exception->getTraceAsString() ?></pre>
+
+    <h3>Request Parameters:</h3>
+    <pre><?php var_dump($this->request->getParams()) ?></pre>
+    <?php endif ?>
+</div>

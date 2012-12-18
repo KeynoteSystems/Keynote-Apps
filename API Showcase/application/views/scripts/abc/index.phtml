@@ -1,0 +1,83 @@
+<?php
+$view = $this->url(array('controller' => 'abc', 'action' => 'generate'));
+$send = $this->url(array('controller' => 'abc', 'action' => 'sendmail'));
+?>
+<form class="form-horizontal" method="post" action="/abc/generate">
+ <fieldset>
+    <legend>Automatic Brick Creator</legend>
+    <div class="row">
+    <div class="span5">
+    <div class="control-group">
+    <label class="control-label" for="mailFrom">Your E-Mail Address</label>
+    <div class="controls">
+      <input class="span2" type="text" id="mailFrom" name="mailFrom" placeholder="someone@keynote.com">
+    </div>
+  </div>
+  </div>
+  <div class="span4">
+  <div class="control-group">
+    <label class="control-label" for="mailTo">Prospect E-Mail Address</label>
+    <div class="controls">
+      <input type="text" id="mailTo" name="mailTo" placeholder="someone@acme.com">
+    </div>
+  </div>
+  </div>
+  </div>
+  <div class="row">
+  <div class="span5">
+  <div class="control-group">
+    <label class="control-label" for="Url">URL Monitored</label>
+    <div class="controls">
+      <input type="text" id="Url" name="Url" placeholder="www.example.com">
+    </div>
+  </div>
+  </div>
+    <div class="span5">
+  <div class="control-group">
+    <label class="control-label" for="Locations">Averaging Method</label>
+    <div class="controls">
+      <select id="am" name="am" placeholder="Averaging Method">
+        <option value="AM">Arithmetric Mean</option>
+        <option value="GM">Geometric Mean</option>
+      </select>
+    </div>
+  </div>
+  </div>
+  </div>
+    <div class="row">
+  <div class="span5">
+  <div class="control-group">
+    <label class="control-label" for="Days">No. of Days</label>
+    <div class="controls">
+      <select id="Days" name="Days">
+        <option value="86400">1 Day</option>
+        <option value="172800">2 Day</option>
+        <option value="259200">3 Day</option>
+        <option value="345600">4 Day</option>
+        <option value="432000">5 Day</option>
+        <option value="604800">1 Week</option>
+     </select>
+    </div>
+  </div>
+  </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="slotId">Slot ID</label>
+    <div class="controls">
+      <select id="slotId" name="slotId" placeholder="Slot ID">
+      <?php foreach($this->slotIds as $alias => $sid) {
+          echo '<option value="' . $sid . '">' . $alias . '</option>';
+      }
+      ?>
+      </select>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <div class="controls">
+      <button type="submit" class="btn btn-info" onclick="this.form.action='<?php echo $view ?>'">View Brick</button>
+      <button type="submit" class="btn btn-success" onclick="this.form.action='<?php echo $send ?>'">Send Brick</button>
+    </div>
+  </div>
+  </fieldset>
+</form>

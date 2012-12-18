@@ -1,0 +1,69 @@
+    <header> <section><?php echo $this->alias?></section> </header>
+    <section class="widgetbox-s-body">
+                    <div id="chart" class="ui-state-default ui-state-disabled" style="width: 1100px; height:185px;"></div>
+    </section>
+</div>
+
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script type="text/javascript">
+    var chart1 = new Highcharts.Chart({
+        chart: {
+            renderTo: 'chart',
+            type: 'line',
+            //reflow: false,
+            borderRadius: 0,
+            borderWidth: 0,
+            backgroundColor: '#232526'
+        },
+
+        legend: false,
+
+        title: {
+            text: null
+        },
+
+        xAxis: {
+            categories: <?php echo $this->date ?>,
+
+            labels: {
+                step: 4
+            }
+        },
+
+        plotOptions: {
+            series: {
+                marker: {
+                    enabled: false
+                }
+            }
+        },
+
+        yAxis: {
+            min: 0,
+            gridLineColor: '#333333',
+            title: {
+                text: 'Time',
+                     style: {
+                         color: '#89A54E'
+                     }
+            }
+        },
+
+        tooltip: {
+            formatter: function() {
+                return '<b>' + this.x + '</b><br/>' + this.series.name + ': ' + this.y + 's';
+            }
+        },
+
+        series: [
+            {
+                name: 'Performance',
+                data: <?php echo $this->perf ?>,
+                color: '#89A54E'
+            }
+        ]
+
+    });
+
+
+    </script>

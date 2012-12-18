@@ -1,0 +1,7 @@
+body {
+	font-family: 'Open Sans', arial, sans-serif;
+}
+
+td.right, th.right {
+	text-align: right;
+}

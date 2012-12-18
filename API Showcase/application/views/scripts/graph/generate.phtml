@@ -1,0 +1,78 @@
+
+<div id="chart"></div>
+    <?php
+    $graph = $this->graphData;
+
+    if ($this->graphType == 'scatter') {
+        $hcGraphType = 'scatter';
+        foreach ($graph->list as $datapoint) {
+            foreach ($datapoint->children() as $dp) {
+                $t = date('D H:i:s', strtotime($dp->datetime));
+                $time[] = $t;
+                $perfData[] = array($t, (string)$dp->txn__summary->delta__msec / 1000);
+            }
+        }
+    } else {
+        foreach ($graph->measurement->bucket_data as $datapoint) {
+        $hcGraphType = 'area';
+            foreach ($datapoint as $dp) {
+                $t = date('D H:i:s', strtotime($dp['name']));
+                $time[] = $t;
+                $perfData[] = array($t, (string)$dp->perf_data['value']);
+            }
+        }
+    }
+
+    $xTime = json_encode($time);
+    $dataPoints = json_encode($perfData, JSON_NUMERIC_CHECK);
+    ?>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script type="text/javascript">
+     var chart = new Highcharts.Chart({
+         chart: {
+             renderTo: 'chart',
+             type: '<?php echo $hcGraphType ?>',
+             reflow: false
+         },
+
+         legend: false,
+
+         title: {
+             text: '<?php echo $this->graphType ?> Graph Example'
+         },
+
+         xAxis: {
+             categories: <?php echo $xTime ?>,
+             labels: {
+                 rotation: 45,
+                 step: 2 * 7,
+                 y: 50
+             },
+             title:{
+                 text: 'Time'
+             }
+         },
+
+         yAxis: {
+             min: 0,
+             title: {
+                 text: 'Performance (seconds)'
+             }
+         },
+
+         tooltip: {
+             formatter: function() {
+                 return '<b>' + this.x + '</b><br/>' + this.series.name + ': ' + this.y + ' s';
+             }
+         },
+
+         series: [
+             {
+                 name: 'Performance',
+                 data: <?php echo $dataPoints ?>
+             }
+         ]
+
+     });
+    </script>
+
