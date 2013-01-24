@@ -1,38 +1,41 @@
 <?php
 class Zend_View_Helper_BarHtml
 {
-    public function barHtml($values, $color='black', $width=200)
-    {
-        $max = -1;
+	public function barHtml($values, $color = 'black', $width = 200)
+	{
+		$max = -1;
 
-        foreach($values as $k => $v) {
-            if (abs($v) > $max) {
-                $max = abs($v);
-            }
-        }
+		foreach($values as $k => $v) {
+			if (abs($v) > $max) {
+				$max = abs($v);
+			}
+		}
 
-        if ($max != 0) {
-            $kf = $width / $max;
-        } else {
-            $kf = 0;
-        }
+		if ($max != 0) {
+			$kf = $width / $max;
+		} else {
+			$kf = 0;
+		}
 
-        $out = "<table cellspacing='5'>" . PHP_EOL;
+		$out = '';
 
-        foreach($values as $k => $v)
-        {
-            $bar_h = abs(round($v * $kf));
-            $out .= "<tr>" .PHP_EOL;
-            $out .= "<td><strong>{$k}</strong></td>" .PHP_EOL;
-            $out .= "</tr>" .PHP_EOL;
-            $out .= "<tr>" .PHP_EOL;
-            $out .= "<td width='{$width}px' align='left' style='border-left: {$bar_h}px solid {$color};'>&nbsp;{$v}</td>" .PHP_EOL;
-            $out .= "</tr>" .PHP_EOL;
+		foreach($values as $k => $v) {
+		    $k = htmlspecialchars($k);
 
-        }
+		    $bar_h = abs(round($v * $kf));
 
-        $out .= '</table>' .PHP_EOL ;
+			$out .= "<table cellspacing='8' border='0' cellpadding='0' width='{$width}' style='font-family: Arial, Helvetica, sans-serif;color: #FFFFFF; font-size: 12px'>" . PHP_EOL;
+			$out .= "<tr>" .PHP_EOL;
+			$out .= "<td><b>{$k}</b></td>" .PHP_EOL;
+			$out .= "</tr>" .PHP_EOL;
+			$out .= "</table>";
+			$out .= "<table cellspacing='3' border='0' cellpadding='0' style='font-family: Arial, Helvetica, sans-serif;color: #FFFFFF; font-size: 11px; line-height:11px'>";
+			$out .= "<tr>" .PHP_EOL;
+			$out .= "<td width='{$bar_h}' bgcolor='{$color}'>&nbsp;</td><td>&nbsp;{$v}</td>" .PHP_EOL;
+			$out .= "</tr>" .PHP_EOL;
+			$out .= "</table>";
+		}
 
-        return $out;
-    }
+		return $out;
+	}
 }

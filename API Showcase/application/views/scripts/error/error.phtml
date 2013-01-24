@@ -1,19 +1,29 @@
-<div class="errorController">
-    <h2>Error!</h2>
-    <p>
-        <b>Message:</b> <?php echo $this->message ?>
-    </p>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Keynote API</title>
+</head>
+<body>
+  <h2>An error occurred!</h2>
+  <h4><?php echo $this->message ?></h4>
 
-    <h3>Exception information:</h3>
-    <p>
-        <b>Message:</b> <?php echo $this->exception->getMessage() ?>
-    </p>
+  <?php if ('development' == APPLICATION_ENV): ?>
 
-    <?php if ($this->developerMode) : ?>
-    <h3>Stack trace:</h3>
-    <pre><?php echo $this->exception->getTraceAsString() ?></pre>
+  <h3>Exception information:</h3>
+  <p>
+      <b>Message:</b> <?php echo $this->exception->getMessage() ?>
+  </p>
 
-    <h3>Request Parameters:</h3>
-    <pre><?php var_dump($this->request->getParams()) ?></pre>
-    <?php endif ?>
-</div>
+  <h3>Stack trace:</h3>
+  <pre><?php echo $this->exception->getTraceAsString() ?>
+  </pre>
+
+  <h3>Request Parameters:</h3>
+  <pre><?php echo var_export($this->request->getParams(), 1) ?>
+  </pre>
+  
+  <?php endif ?>
+  
+</body>
+</html>

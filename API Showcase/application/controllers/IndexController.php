@@ -1,5 +1,4 @@
 <?php
-
 class IndexController extends Zend_Controller_Action
 {
     /**
@@ -11,21 +10,15 @@ class IndexController extends Zend_Controller_Action
 
     public function indexAction()
     {
+        $this->view->config = Zend_Registry::get('config');
+
         /**
          * Initialise session
          */
         $this->_session = new Zend_Session_Namespace('DASHBOARD');
 
-        /**
-         * Load in configuration from dashboard.ini
-         */
-        $config = Zend_Registry::get('config');
-
         $this->view->locale = Zend_Registry::get('locale');
-    }
 
-    public function switchmodeAction()
-    {
-
+        $this->view->api_key = $this->_session->apiKey;
     }
 }

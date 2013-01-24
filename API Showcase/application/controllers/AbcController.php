@@ -1,14 +1,6 @@
 <?php
-
 class AbcController extends Zend_Controller_Action
 {
-    /**
-     * Session
-     *
-     * @var array
-     */
-    private $_session = array();
-
     /**
      * API
      *
@@ -23,14 +15,16 @@ class AbcController extends Zend_Controller_Action
 
     public function init()
     {
-        $this->_config = Zend_Registry::get('config');
+        $this_config = Zend_Registry::get('config');
 
-        $this->_session = new Zend_Session_Namespace('DASHBOARD');
+        $this->view->locale = Zend_Registry::get('locale');
+
+        $session = new Zend_Session_Namespace('DASHBOARD');
 
         $this->_api = new Keynote_Client();
 
-        if ($this->_session->apiKey) {
-            $this->_api->api_key = $this->_session->apiKey;
+        if ($session->apiKey) {
+            $this->_api->api_key = $session->apiKey;
         } else {
             $this->_redirect('index');
         }
@@ -38,18 +32,19 @@ class AbcController extends Zend_Controller_Action
 
     public function indexAction()
     {
-        $this->_helper->layout()->setLayout('abc');
-
         $slotData = $this->_api->getSlotMetaData();
 
         $cDate = date('Y-m-d H:i:s');
 
+        $slotIds = array();
+
         foreach ($slotData->product as $a) {
-            if ($a->name != 'ApP') {
+            if ($a->name != 'ApP' && $a->name != 'MDP' && $a->name != 'STP') {
                 foreach ($a->slot as $b) {
                     $endDate = $b->end_date;
-                    if ($endDate > $cDate) {
-                        $slotIds[$b->slot_alias] = $b->slot_id;
+                    $nPages = explode(',', $b->pages);
+                    if ($endDate >= $cDate) {
+                        $slotIds[$b->slot_alias] = array($b->slot_id, $a->name);
                     }
                 }
             }
@@ -60,102 +55,118 @@ class AbcController extends Zend_Controller_Action
 
     public function generateAction()
     {
-        $this->_helper->layout->disableLayout();
+    	$this->abcContent($this->_request->getParams());
 
-        $this->view->currentDate = date('Y-m-d');
+    	$this->_helper->layout->disableLayout();
 
-        $brick = $this->_api->getGraphData(array($this->_request->getParam('slotId')), 'agent', $this->_config->general->timeZone, 'relative', $this->_request->getParam('Days'), 86400, 'U,Y,M', $this->_request->getParam('am'));
-
-        foreach ($brick->measurement[0]->bucket_data as $m) {
-            $perfLocation[] = array('perf' => $m->perf_data->value . 's', 'location' => $m->name);
-            $availLocation[] = array('avail' => $m->avail_data->value . '%', 'location' => $m->name);
-        }
-
-        sort($perfLocation);
-        sort($availLocation);
-
-        $this->view->agentCount = count($perfLocation);
-
-        $nAgents = count($perfLocation) - 1;
-
-        $this->view->urlMonitored = $this->_request->getParam('Url');
-        $this->view->locations = $this->_request->getParam('Locations');
-        $this->view->days = $this->_request->getParam('Days') / 86400;
-
-        $this->view->fastest = $perfLocation[0];
-        $this->view->slowest = $perfLocation[$nAgents];
-
-        $this->view->perfGraph = array($perfLocation[0]['location'] => $perfLocation[0]['perf'] . ' (Fastest)',
-        $perfLocation[$nAgents]['location'] => $perfLocation[$nAgents]['perf'] . ' (Slowest)');
-
-        $pgraph = array();
-
-        foreach ($perfLocation as $k => $v) {
-            $pgraph[$v['location']] = $v['perf'];
-        }
-
-        $agraph = array();
-
-        foreach ($availLocation as $k => $v) {
-            $agraph[$v['location']] = $v['avail'];
-        }
-
-        $this->view->availGraph = array($availLocation[0]['location'] => $availLocation[0]['avail'] . ' (Lowest)',
-        $availLocation[$nAgents]['location'] => $availLocation[$nAgents]['avail'] . ' (Highest)');
-
-        $this->view->perfGraph = $pgraph;
-        $this->view->availGraph = $agraph;
-
-        $this->view->lowest = $availLocation[0];
-        $this->view->highest = $availLocation[$nAgents];
-
-        $this->view->alias = str_replace(' - Total Time (seconds)', '', $brick->measurement[0]->alias);
-        $this->view->avgPerf = $brick->measurement[0]->graph_option[7]->value;
-        $this->view->avgAvail = $brick->measurement[0]->graph_option[8]->value;
-        $this->view->avgBytes = number_format($brick->measurement[1]->graph_option[7]->value / 1024000, 2, '.', ',');
-        $this->view->recBytes = number_format(1, 2, '.', ',');
-        $this->view->avgObj = number_format($brick->measurement[2]->graph_option[7]->value, 1, '.', '');
-
-        $this->view->bytesGraph = array('Bytes Downloaded' => $this->view->avgBytes . 'Mb', 'Recommended' => $this->view->recBytes . 'Mb');
-        $this->view->objGraph = array('No. of Objects' => $this->view->avgObj, 'Recommended' => '50');
-
-        $this->view->perfFontColor = ($this->view->avgPerf <= 2) ? '#77AB13' : '#AE432E';
-        $this->view->perfArrow = ($this->view->avgPerf > 2) ? 'down' : 'up';
-
-        $this->view->availFontColor = ($this->view->avgAvail > 99.5) ? '#77AB13' : '#AE432E';
-        $this->view->availArrow = ($this->view->avgAvail > 99.5) ? 'up' : 'down';
+    	$this->view->currentDate = date('Y-m-d');
     }
 
     public function sendmailAction()
     {
+    	$this->abcContent($this->_request->getParams());
 
-        $this->_helper->layout->disableLayout();
+        $htmlString = $this->view->render('abc/generate.phtml');
 
-        $this->_helper->viewRenderer->setNoRender();
+        $this->view->message = "<div class='alert alert-success'>Your mail has been successfully sent!</div>";
 
-        $crl = curl_init();
-        $timeout = 60;
-        curl_setopt ($crl, CURLOPT_URL,'http://192.168.1.10/abc/generate');
-        curl_setopt ($crl, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt ($crl, CURLOPT_CONNECTTIMEOUT, $timeout);
-        $str = curl_exec($crl);
-        curl_close($crl);
+        $mail = new Zend_Mail('UTF-8');
+        $mail->addTo($this->_request->getParam('mailTo'), $this->_request->getParam('prospectName'));
+        $mail->setFrom($this->_request->getParam('mailFrom'), $this->_request->getParam('fullName'));
+        if ($this->_request->getParam('ccAddress')) {
+            $mail->addCc($this->_request->getParam('ccAddress'));
+        }
+        $mail->addBcc($this->_request->getParam('mailFrom'));
+        $mail->setSubject($this->_request->getParam('mailSubject'));
+        $mail->setBodyHtml($htmlString);
+        $mail->send();
+    }
 
-        $to = "robert.castley@gmail.com";
-        $from = "robert.castley@keynote.com";
-        $subject = "Example Daily Report created using the API (incl. Objects & Bytes Downloaded)";
+    public function abcContent($params)
+    {
+    	$slotId = explode(',', $params['slotId']);
 
-        $message = $str;
+    	switch ($slotId[1]) {
+    		case 'MWP':
+    			$this->view->product = 'WebKit Engine';
+    			$transPageList = null;
+    			break;
+    		case 'TxP':
+    			$this->view->product = 'Real Browser';
+    			$transPageList = array($slotId[0] . ':1');
+    			break;
+    	}
 
-        // To send the HTML mail we need to set the Content-type header.
-        $headers = "MIME-Version: 1.0\r\n";
-        $headers .= "Content-Type: text/html; charset=ISO-8859-1\r\n";
-        $headers  .= "From: $from\r\n";
-        //$headers .= "Bcc: [email]email@maaking.cXom[/email]";
+    	$brick = $this->_api->getGraphData(array($slotId[0]), 'agent', $this->_config['graph']['timezone'], 'relative', $params['days'], 86400, 'U,Y,M', $params['am'], $transPageList);
 
-        // now lets send the email.
-        mail($to, $subject, $message, $headers);
+    	foreach ($brick->measurement[0]->bucket_data as $m) {
+    		$perfLocation[] = array('perf' => $m->perf_data->value . 's', 'location' => $m->name);
+    		$availLocation[] = array('avail' => $m->avail_data->value . '%', 'location' => $m->name);
+    	}
 
-        echo "Message has been sent....!" . $to;
+    	sort($perfLocation);
+    	sort($availLocation);
+
+    	$this->view->agentCount = count($perfLocation);
+
+    	$nAgents = count($perfLocation) - 1;
+
+    	$pgraph = array();
+
+    	foreach ($perfLocation as $k => $v) {
+    		$pgraph[$v['location']] = $v['perf'];
+    	}
+
+    	$agraph = array();
+
+    	foreach ($availLocation as $k => $v) {
+    		$agraph[$v['location']] = $v['avail'];
+    	}
+
+    	$this->view->perfGraph  = $pgraph;
+    	$this->view->availGraph = $agraph;
+
+    	$prospectFName = explode(" ", $params['prospectName']);
+
+    	$this->view->url           = $params['url'];
+    	$this->view->days          = $params['days'] / 86400;
+    	$this->view->interval      = $params['interval'];
+    	$this->view->fullName      = $params['fullName'];
+    	$this->view->mailFrom      = $params['mailFrom'];
+    	$this->view->browserDevice = $params['browserDevice'];
+    	$this->view->prospectFName = $prospectFName[0];
+
+    	$this->view->avgPerf  = $brick->measurement[0]->graph_option[7]->value;
+    	$this->view->avgAvail = $brick->measurement[0]->graph_option[8]->value;
+
+    	$this->view->avgBytes = number_format($brick->measurement[1]->graph_option[7]->value / 1024000, 2, '.', ',');
+    	$this->view->avgObj   = number_format($brick->measurement[2]->graph_option[7]->value, 0);
+
+    	$this->view->bytesGraph = array($this->view->translate('bytesdownloaded') => $this->view->avgBytes . 'Mb', $this->view->translate('recmaximum') => '0.5Mb');
+    	$this->view->objGraph   = array($this->view->translate('numobjects') => $this->view->avgObj, $this->view->translate('recmaximum') => '50');
+
+    	$this->view->perfCellColor  = ($this->view->avgPerf <= 2) ? '#5faa1a' : '#da542e';
+    	$this->view->perfGraphColor = ($this->view->avgPerf <= 2) ? '#92D050' : '#da542e';
+    	$this->view->perfGraphCellColor = ($this->view->avgPerf <= 2) ? '#528f31' : '#613cbd';
+
+    	$this->view->fastSlow  = ($this->view->avgPerf <= 2) ? $this->view->translate('faster') : $this->view->translate('slower');
+
+    	$this->view->perfArrow = ($this->view->avgPerf > 2) ? 'down-arrow.png' : 'up-arrow.png';
+
+    	$this->view->availCellColor  = ($this->view->avgAvail > 99.5) ? '#5faa1a' : '#da542e';
+    	$this->view->availGraphColor = ($this->view->avgAvail > 99.5) ? '#92D050' : '#da542e';
+    	$this->view->availGraphCellColor = ($this->view->avgAvail > 99.5) ? '#528f31' : '#613cbd';
+
+    	$this->view->betterWorse = ($this->view->avgAvail > 99.5) ? $this->view->translate('better') : $this->view->translate('worse');
+
+    	$this->view->availArrow = ($this->view->avgAvail > 99.5) ? 'up-arrow.png' : 'down-arrow.png';
+    	if ($this->view->avgAvail == 100) {
+    		$this->view->availArrow = 'right-arrow.png';
+    	}
+
+    	$this->view->customHeadline = $this->_request->getParam('customHeadline');
+    	$this->view->customMessage  = $this->_request->getParam('customMessage');
+
+    	return;
     }
 }

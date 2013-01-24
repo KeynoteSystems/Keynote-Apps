@@ -1,45 +1,73 @@
-<?php
-        $time = microtime();
-        $time = explode(' ', $time);
-        $time = $time[1] + $time[0];
-        $start = $time;
-?>
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Keynote - Daily Report</title>
 <style type="text/css">
-body,html,table {
-	font-size: 11px;
-    font-family: Arial;
-}
-
-h3 {
-	font-size: 14px;
-    font-family: Arial;
+body,html {
+	font-size: 100%;
+    font-family: 'Gill Sans', Tahoma, sans-serif;
 }
 
 table {
-    border-width: 1px;
-    border-color: #E9E7E0;
-    border-style: solid;
-    border-collapse: collapse;
+    font-size: 80%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 10px 0;
+  font-family: 'Gill Sans', Tahoma, sans-serif;
+  font-weight: bold;
+  line-height: 20px;
+  color: inherit;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 40px;
+}
+
+h1 {
+  font-size: 38.5px;
+}
+
+h2 {
+  font-size: 31.5px;
+}
+
+h3 {
+  font-size: 20.5px;
+}
+
+h4 {
+  font-size: 15.5px;
+}
+
+h5 {
+  font-size: 12px;
+}
+
+h6 {
+  font-size: 11.9px;
 }
 
 th {
-	background-color: #F9F8F0;
+	background-color: #F9F9F9;
+}
+
+#container {
+border: 1px solid #DDDDDD;
 }
 </style>
 </head>
 <body>
 <?php echo $this->layout()->content ?>
 
-<?php
-$time = microtime();
-$time = explode(' ', $time);
-$time = $time[1] + $time[0];
-$finish = $time;
-$total_time = round(($finish - $start), 4);
-echo 'Report generated in '.$total_time.' seconds.';
-?>
 <h4>Performance</h4>
 <p>Average time for full page(s) download.  Data is compared to last 28 days of history</p>
 <table cellpadding="5">
@@ -54,10 +82,10 @@ echo 'Report generated in '.$total_time.' seconds.';
 <p>Average percentage of successful measurements during the period</p>
 <table cellpadding="5">
 <tr bgcolor="#FFFF99">
-<td width="150">Yellow</td><td>&lt;99.5%</td>
+<td width="150">Yellow</td><td>&lt;<?php echo $this->avail_warn ?>%</td>
 </tr>
 <tr bgcolor="#FF9999">
-<td>Red</td><td>&gt;98%</td>
+<td>Red</td><td>&gt;<?php echo $this->avail_crit ?>%</td>
 </tr>
 </table>
 <h4>Objects</h4>

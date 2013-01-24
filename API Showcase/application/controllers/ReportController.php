@@ -10,9 +10,12 @@ class ReportController extends Zend_Controller_Action
 
     public function init()
     {
-        $config = Zend_Registry::get('config');
 
-        $this->_helper->layout()->setLayout('report');
+    }
+
+    public function indexAction()
+    {
+        $config = Zend_Registry::get('config');
 
         $this->view->locale = Zend_Registry::get('locale');
 
@@ -34,10 +37,6 @@ class ReportController extends Zend_Controller_Action
 
         $this->view->alarm = $api->getAlarmMetaData();
 
-    }
-
-    public function indexAction()
-    {
-
+        $this->view->cDate = date('Y-m-d H:i:s');
     }
 }

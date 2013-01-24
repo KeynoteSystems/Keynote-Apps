@@ -1,5 +1,4 @@
 <?php
-
 class DashboardController extends Zend_Controller_Action
 {
     /**
@@ -8,6 +7,8 @@ class DashboardController extends Zend_Controller_Action
     * @var array
     */
     private $_session = array();
+
+    private $_config = array();
 
 	private $slotCount;
 
@@ -19,7 +20,7 @@ class DashboardController extends Zend_Controller_Action
 
 	public function init()
 	{
-		$config = Zend_Registry::get('config');
+	    $this->_config = Zend_Registry::get('config');
 
 		$this->view->locale = Zend_Registry::get('locale');
 
@@ -33,7 +34,7 @@ class DashboardController extends Zend_Controller_Action
 			$api->api_key = $this->_session->apiKey;
 		} else {
             $this->_redirect('index');
-			$api->api_key = $config->general->apiKey;
+			$api->api_key = $this->_config['apikey'];
 		}
 
 		$api->format = 'json';
@@ -62,8 +63,8 @@ class DashboardController extends Zend_Controller_Action
 
 		$this->view->slotId = $this->slotId;
 
-		$this->view->apiKey = $config->general->apiKey;
-
+		//$this->view->apiKey = $config->general->apiKey;
+		
 		foreach ($this->dashboard->product as $p) {
 
 			foreach ($p->measurement as $m) {
@@ -77,8 +78,7 @@ class DashboardController extends Zend_Controller_Action
 
 			}
 		}
-
-
+		
 	}
 
 	public function indexAction()
@@ -98,8 +98,6 @@ class DashboardController extends Zend_Controller_Action
 
 		$api = new Keynote_Client();
 
-		$config = Zend_Registry::get('config');
-
 		if ($this->_session->apiKey) {
 			$api->api_key = $this->_session->apiKey;
 		} else {
@@ -115,7 +113,7 @@ class DashboardController extends Zend_Controller_Action
 			$slotId = $this->_getParam('slotid');
 		}
 
-		$graph = $api->getGraphData(array($slotId), "time", $config->general->timeZone, "relative", 43200, 3600, null);
+		$graph = $api->getGraphData(array($slotId), "time", $this->_config['graph']['timezone'], "relative", 43200, 3600, null, 'GM', array($slotId));
 
 		foreach ($graph->measurement as $slot) {
 			$a = $slot->alias;

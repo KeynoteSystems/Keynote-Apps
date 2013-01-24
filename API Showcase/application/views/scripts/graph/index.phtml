@@ -3,65 +3,60 @@ $view = $this->url(array('controller' => 'abc', 'action' => 'generate'));
 $send = $this->url(array('controller' => 'abc', 'action' => 'sendmail'));
 ?>
 <form class="form-horizontal" method="post" action="/graph/generate">
- <fieldset>
-    <legend>Graph Creator</legend>
-
-  <div class="control-group">
-    <label class="control-label" for="Locations">Averaging Method</label>
-    <div class="controls">
-      <select id="am" name="am" placeholder="Averaging Method">
-        <option value="AM">Arithmetric Mean</option>
-        <option value="GM">Geometric Mean</option>
-      </select>
-    </div>
-  </div>
-
-
-  <div class="control-group">
-    <label class="control-label" for="Days">No. of Days</label>
-    <div class="controls">
-      <select id="Days" name="Days">
-        <option value="86400">1 Day</option>
-        <option value="172800">2 Day</option>
-        <option value="259200">3 Day</option>
-        <option value="345600">4 Day</option>
-        <option value="432000">5 Day</option>
-        <option value="604800">1 Week</option>
-     </select>
-    </div>
-  </div>
-
-    <div class="control-group">
-    <label class="control-label" for="graphType">Graph Type</label>
-    <div class="controls">
-      <select id="graphType" name="graphType">
-        <option value="time">Perf/Avail by Time</option>
-        <option value="agent">Perf/Avail by Agent</option>
-        <option value="backbone">Perf/Avail by Carrier</option>
-        <option value="city">Perf/Avail by City</option>
-        <option value="country">Perf/Avail by Country</option>
-        <option value="region">Perf/Avail by Region</option>
-        <option value="scatter">Scatter Plot</option>
-     </select>
-    </div>
-  </div>
-
-  <div class="control-group">
-    <label class="control-label" for="slotId">Slot ID</label>
-    <div class="controls">
-      <select id="slotId" name="slotId" placeholder="Slot ID">
-      <?php foreach($this->slotIds as $alias => $sid) {
-          echo '<option value="' . $sid . '">' . $alias . '</option>';
-      }
-      ?>
-      </select>
-    </div>
-  </div>
-
-  <div class="control-group">
-    <div class="controls">
-      <button type="submit" class="btn btn-info">View Graph</button>
-    </div>
-  </div>
-  </fieldset>
+    <fieldset>
+        <legend>Graph Creator</legend>
+        <div class="control-group">
+            <label class="control-label" for="slotId">Slot ID</label>
+            <div class="controls">
+                <select id="slotId" name="slotId" placeholder="Slot ID">
+                <?php foreach($this->slotIds as $alias => $sid): ?>
+                    <option value="<?php echo $sid ?>">
+                    <?php echo $alias ?>
+                    </option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="Locations">Averaging Method</label>
+            <div class="controls">
+                <select id="am" name="am" placeholder="Averaging Method">
+                    <option value="AM">Arithmetric Mean</option>
+                    <option value="GM">Geometric Mean</option>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="Days">No. of Days</label>
+            <div class="controls">
+                <select id="Days" name="Days">
+                    <option value="86400">1 Day</option>
+                    <option value="172800">2 Day</option>
+                    <option value="259200">3 Day</option>
+                    <option value="345600">4 Day</option>
+                    <option value="432000">5 Day</option>
+                    <option value="604800">1 Week</option>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="graphType">Graph Type</label>
+            <div class="controls">
+                <select id="graphType" name="graphType">
+                    <option value="time">Perf/Avail by Time</option>
+                    <option value="agent">Perf/Avail by Agent</option>
+                    <option value="backbone">Perf/Avail by Carrier</option>
+                    <option value="city">Perf/Avail by City</option>
+                    <option value="country">Perf/Avail by Country</option>
+                    <option value="region">Perf/Avail by Region</option>
+                    <option value="scatter">Scatter Plot</option>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn btn-info">View Graph</button>
+            </div>
+        </div>
+    </fieldset>
 </form>

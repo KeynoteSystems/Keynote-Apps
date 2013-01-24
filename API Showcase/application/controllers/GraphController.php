@@ -1,5 +1,4 @@
 <?php
-
 class GraphController extends Zend_Controller_Action
 {
     /**
@@ -23,7 +22,7 @@ class GraphController extends Zend_Controller_Action
 
     public function init()
     {
-        $this->_config = Zend_Registry::get('config');
+        $this_config = Zend_Registry::get('config');
 
         $this->_session = new Zend_Session_Namespace('DASHBOARD');
 
@@ -64,14 +63,13 @@ class GraphController extends Zend_Controller_Action
             $bSize = 3600;
         }
 
-        //$this->_helper->layout->disableLayout();
-
         $this->view->currentDate = date('Y-m-d');
 
         $this->_api->format = 'xml';
 
-        $this->view->graphType = $this->_request->getParam('graphType');
-        $this->view->graphData = $this->_api->getGraphData(array($this->_request->getParam('slotId')), $this->_request->getParam('graphType'), $this->_config->general->timeZone, 'relative', $nDays, $bSize, null, $this->_request->getParam('am'));
+        $this->view->days = $nDays;
+        $this->view->graphType = ucfirst($this->_request->getParam('graphType'));
+        $this->view->graphData = $this->_api->getGraphData(array($this->_request->getParam('slotId')), $this->_request->getParam('graphType'), $this->_config['graph']['timezone'], 'relative', $nDays, $bSize, null, $this->_request->getParam('am'), array($this->_request->getParam('slotId')));
     }
 
 }
