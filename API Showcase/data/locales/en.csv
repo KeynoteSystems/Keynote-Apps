@@ -1,0 +1,45 @@
+﻿perf1;"How does your site perform compared to the industry best practice target of <strong>2 seconds</strong>?"
+
+greeting;"Dear %s,"
+
+intro1;"We recently conducted a study on your site's home page (<strong>%s</strong>) from <strong>%s locations</strong>."
+intro2;"The page was monitored every <strong>%s mins</strong> using a <strong>%s (%s)</strong> for the last <strong>%s days</strong>. This method allows for us to provide the industry's most accurate performance and availability metrics."
+intro3;"Would you like to learn more?  Then please do not hesitate to contact us."
+
+userexp1;"Your site is <span class='h'>%s seconds %s</span> than the industry best practice of <strong>2 seconds</strong>!"
+userexp2;"The above is the mean download time the page took from <strong>all</strong> monitoring locations."
+userexp3;"This includes time in generation, downloading of assets and any render or browser processing time.  This is the time experienced by an end user."
+
+avail1;"How often was your site available for your users/customers?"
+avail2;"The above percentage is the average availability from all monitoring locations."
+avail3;"This is <strong>%s</strong> than the expected %s"
+
+pageweight1;"The number of objects in a page and the page size itself can greatly impact the performance.  Consider reducing the number of objects and reduce the page size."
+pageweight2;"The less round trips a web browser has to do then the less time it will take for the page to load."
+pageweight3;"Make use of CSS sprites and compress JavaScript and CSS."
+
+perfgraph;"From which locations is your site the fastest? From where does it perform poorly? Do you need a CDN?"
+availgraph;"Users expect your site to be available 24 hours per day, 7 days per week and 365 days per year!  Especially the paying ones!"
+
+youravail;"Your availability is %s than the expected"
+
+faster;"faster"
+slower;"slower"
+better;"better"
+worse;"worse"
+
+avgperf;"Average Performance"
+avgavail;"Average Availability"
+
+objects;"Objects"
+pagew;"Page Weight"
+size; "Size"
+
+availability;"Availability"
+performance;"Performance"
+
+prepared;"Prepared by"
+
+numobjects;"Number of Objects"
+recmaximum;"Recommended Maximum"
+bytesdownloaded;"Bytes Downloaded"
