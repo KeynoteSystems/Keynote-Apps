@@ -1,0 +1,46 @@
+﻿perf1;"Wie performant ist Ihre Webseite im Vergleich zum empfohlenen Branchenstandard von <strong>2 Sekunden</strong>?"
+
+greeting;"Hallo %s,"
+
+intro1;"Wir haben kürzlich eine Studie mit Ihrer Homepage durchgeführt (<strong>%s</strong>), über <strong>%s Standorte</strong>."
+intro2;"Die Seite wurde alle <strong>%s Minuten</strong> mittels <strong>%s (%s)</strong> in den letzten <strong>%s Tagen</strong> gemessen. Diese Methode erlaubt uns, die präzisesten Performance- und Verfügbarkeitsdaten der Branche zu liefern." 
+intro3;"Möchten Sie mehr darüber erfahren? Dann zögern Sie bitte nicht, uns zu kontaktieren."
+
+userexp1;"Ihre Web-Seite ist <span class='h'>%s Sekunden %s</span> als der empfohlene Branchenstandard von <strong>2 Sekunden</strong>!"
+userexp2;"Oben sehen Sie die durchschnittliche Ladezeit über <strong>alle</strong> Monitoring-Standorte."
+userexp3;"Dies beinhaltet die Zeit der Generierung, des Herunterladens von Assets sowie des Renderns oder weiterer Browserverarbeitungszeit. Es ist die Zeit, die ein Besucher als Wartezeit wahrnimmt."
+
+avail1;"Wie oft war Ihre Seite für Ihre Besucher/Kunden verfügbar?"
+avail2;"Der Prozentwert oben zeigt die durchschnittliche Verfügbarkeit an allen Monitoring-Standorten an."
+avail3;"Das ist <strong>%s</strong> als die erwarteten %s."
+
+pageweight1;"Die Anzahl der Objekte in einer Seite und die Seitengröße an sich können die Performance sehr negativ beeinflussen. Sie sollten eine Minimierung der Objektanzahl und der Seitengröße anstreben."
+pageweight2;"Je weniger Requests ein Browser für eine Seite benötigt, desto schneller wird diese geladen."
+pageweight3;"Verwenden Sie CSS Sprites und komprimierte JavaScript- und CSS-Dateien."
+
+perfgraph;"An welchen Standorten ist Ihre Seite am schnellsten? Wo hapert es mit der Performance? Benötigen Sie eventuell ein CDN?"
+availgraph;"Besucher erwarten, dass Ihre Seite 24 Stunden am Tag verfügbar ist, 7 Tage in der Woche, 365 Tage im Jahr! Besonders die zahlenden Besucher!"
+
+youravail;"Ihre Verfügbarkeit ist %s als die erwarteten"
+
+faster;"schneller"
+slower;"langsamer"
+better;"besser"
+worse;"schlechter"
+
+avgperf;"Ihre durchschnittliche Performance"
+avgavail;"Ihre durchschnittliche Verfügbarkeit"
+
+objects;"Objekte"
+pagew;"Seitenaufbau"
+size; "Größe"
+
+availability;"Verfügbarkeit"
+performance;"Performance"
+
+prepared;"Ihr Ansprechpartner:"
+
+numobjects;"Objektanzahl"
+recmaximum;"Empfohlenes Maximum"
+bytesdownloaded;"Heruntergeladene Datenmenge"
+

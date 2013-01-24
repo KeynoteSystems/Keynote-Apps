@@ -1,0 +1,6 @@
+/library/Zend/
+.settings/
+.buildpath
+.DS_Store
+.project
+application-dev.ini
