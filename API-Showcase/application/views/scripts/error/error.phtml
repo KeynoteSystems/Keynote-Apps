@@ -1,29 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Keynote API</title>
+<head>
+<meta charset="utf-8">
+<title>Keynote API</title>
 </head>
 <body>
-  <h2>An error occurred!</h2>
-  <h4><?php echo $this->message ?></h4>
+    <div class="alert alert-error">
+        <h4>An error occurred!</h4>
+        <?php echo $this->message ?>
+    </div>
 
-  <?php if ('development' == APPLICATION_ENV): ?>
+    <?php if ('development' == APPLICATION_ENV): ?>
+    <div class="alert alert-block">
+        <h4>Exception information:</h4>
+        <b>Message:</b>
+        <?php echo $this->exception->getMessage() ?>
+    </div>
 
-  <h3>Exception information:</h3>
-  <p>
-      <b>Message:</b> <?php echo $this->exception->getMessage() ?>
-  </p>
+    <div class="alert alert-block alert-info">
+        <h4>Stack trace:</h4>
+        <pre><?php echo $this->exception->getTraceAsString() ?></pre>
+    </div>
 
-  <h3>Stack trace:</h3>
-  <pre><?php echo $this->exception->getTraceAsString() ?>
-  </pre>
+    <div class="alert alert-block alert-info">
+       <h4>Request Parameters:</h4>
+       <pre><?php echo var_export($this->request->getParams(), 1) ?></pre>
+       <?php endif ?>
+    </div>
 
-  <h3>Request Parameters:</h3>
-  <pre><?php echo var_export($this->request->getParams(), 1) ?>
-  </pre>
-  
-  <?php endif ?>
-  
 </body>
 </html>
