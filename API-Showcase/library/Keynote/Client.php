@@ -1,82 +1,84 @@
 <?php
 class Keynote_Client
 {
-	/**
-	 *
-	 * Keynote Base URL
-	 * @var string
-	 */
-	private $api_url = 'https://api.keynote.com/keynote/api/';
+    /**
+     *
+     * Keynote Base URL
+     * @var string
+     */
+    private $api_url = 'https://api.keynote.com/keynote/api/';
 
-	/**
-	 *
-	 * Keynote API Key
-	 * @var string
-	 */
-	public $api_key;
+    /**
+     *
+     * Keynote API Key
+     * @var string
+     */
+    public $api_key;
 
-	/**
-	 *
-	 * Select either xml or json for data format
-	 * @var string
-	 */
-	public $format = 'json';
+    /**
+     *
+     * Select either xml or json for data format
+     * @var string
+     */
+    public $format = 'json';
 
-	/**
-	 *
-	 * Perform the cURL reqest
-	 * @param string $request
-	 * @return array
-	 */
-	protected function _getData($request)
-	{
-		$time = microtime();
-		$time = explode(' ', $time);
-		$time = $time[1] + $time[0];
-		$start = $time;
-		$ch = curl_init($request);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_ENCODING, "gzip");
-		curl_setopt($ch, CURLOPT_HEADER, 0);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
-		$data = curl_exec($ch);
-		if (curl_errno($ch))
-		{
-			throw new Exception(curl_error($ch));
-		}
-		curl_close($ch);
-		$time = microtime();
-		$time = explode(' ', $time);
-		$time = $time[1] + $time[0];
-		$finish = $time;
-		$total_time = round(($finish - $start), 4);
-		
-		$logger = Zend_Registry::get('logger');
-		$logger->log($request . ' generated in '.$total_time.' seconds.', 7);
+    /**
+     *
+     * Perform the cURL reqest
+     * @param string $request
+     * @return array
+     */
+    protected function _getData($request)
+    {
+        $time = microtime();
+        $time = explode(' ', $time);
+        $time = $time[1] + $time[0];
+        $start = $time;
+        $ch = curl_init($request);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_ENCODING, "gzip");
+        curl_setopt($ch, CURLOPT_HEADER, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);
+        $data = curl_exec($ch);
+        if (curl_errno($ch))
+        {
+            throw new Exception(curl_error($ch));
+        }
+        curl_close($ch);
+        $time = microtime();
+        $time = explode(' ', $time);
+        $time = $time[1] + $time[0];
+        $finish = $time;
+        $total_time = round(($finish - $start), 4);
 
-		switch ($this->format) {
-			case 'json':
-				return json_decode($data);
-				break;
-			case 'xml':
-				return new SimpleXMLElement($data);
-				break;
-		}
-	}
+        if ('development' == APPLICATION_ENV) {
+            $logger = Zend_Registry::get('logger');
+            $logger->log($request . ' generated in '.$total_time.' seconds.', 7);
+        }
 
-	/**
-	 *
-	 * GetSlotMetaData - get slot details
-	 * @param string $login
-	 * @param string $usergroup
-	 * @param string $agreement
-	 * @param string $company
-	 * @return string
-	 */
-	public function getSlotMetaData($login = null, $usergroup = null, $agreement = null, $company = null)
-	{
-		$request = $this->api_url . 'getslotmetadata' .
+        switch ($this->format) {
+            case 'json':
+                return json_decode($data);
+                break;
+            case 'xml':
+                return new SimpleXMLElement($data);
+                break;
+        }
+    }
+
+    /**
+     *
+     * GetSlotMetaData - get slot details
+     * @param string $login
+     * @param string $usergroup
+     * @param string $agreement
+     * @param string $company
+     * @return string
+     */
+    public function getSlotMetaData($login = null, $usergroup = null, $agreement = null, $company = null)
+    {
+        $request = $this->api_url . 'getslotmetadata' .
 				'?api_key='    . $this->api_key .
 				'&login='      . $login .
 				'&usergroup='  . $usergroup .
@@ -85,59 +87,59 @@ class Keynote_Client
 				'&history=n'   .
 				'&format='     . $this->format;
 
-		return $this->_getData($request);
-	}
+        return $this->_getData($request);
+    }
 
-	/**
-	 *
-	 * GetDashBoardData - Dashboard request in list or grid format
-	 * @param string $type
-	 * @param string $format
-	 * @return string
-	 */
-	public function getDashboardData($type = 'list')
-	{
-		$request = $this->api_url . 'getdashboarddata' .
+    /**
+     *
+     * GetDashBoardData - Dashboard request in list or grid format
+     * @param string $type
+     * @param string $format
+     * @return string
+     */
+    public function getDashboardData($type = 'list')
+    {
+        $request = $this->api_url . 'getdashboarddata' .
 				'?api_key='    . $this->api_key .
 				'&type='       . $type .
 				'&format='     . $this->format;
 
-		return $this->_getData($request);
-	}
+        return $this->_getData($request);
+    }
 
-	/**
-	 *
-	 * GetAlarmMetaData - Get alarm details
-	 * @return string
-	 */
-	public function getAlarmMetaData()
-	{
-		$request = $this->api_url . 'getalarmmetadata' .
+    /**
+     *
+     * GetAlarmMetaData - Get alarm details
+     * @return string
+     */
+    public function getAlarmMetaData()
+    {
+        $request = $this->api_url . 'getalarmmetadata' .
 				'?api_key='    . $this->api_key .
 				'&format='     . $this->format;
 
-		return $this->_getData($request);
-	}
+        return $this->_getData($request);
+    }
 
-	/**
-	 *
-	 * GetGraphData
-	 * @param array $slotidlist
-	 * @param string $graphtype
-	 * @param string $timezone
-	 * @param string $timemode
-	 * @param int $relativehours
-	 * @param int $bucket
-	 * @param string $pagecomponent
-	 * @param string $averagemethod
-	 * @param array $transpagelist
-	 * return string
-	 */
-	public function getGraphData($slotidlist, $graphtype='time', $timezone='GMT', $timemode='relative', $relativehours=86400, $bucket=1800, $pagecomponent = null, $averagemethod='AM', $transpagelist=null)
-	{
-		$slots = implode(',', $slotidlist);
+    /**
+     *
+     * GetGraphData
+     * @param array $slotidlist
+     * @param string $graphtype
+     * @param string $timezone
+     * @param string $timemode
+     * @param int $relativehours
+     * @param int $bucket
+     * @param string $pagecomponent
+     * @param string $averagemethod
+     * @param array $transpagelist
+     * return string
+     */
+    public function getGraphData($slotidlist, $graphtype='time', $timezone='GMT', $timemode='relative', $relativehours=86400, $bucket=1800, $pagecomponent = null, $averagemethod='AM', $transpagelist=null)
+    {
+        $slots = implode(',', $slotidlist);
 
-		$request = $this->api_url    . 'getgraphdata'.
+        $request = $this->api_url    . 'getgraphdata'.
 				'?api_key='       . $this->api_key .
 				'&slotidlist='    . $slots .
 				'&graphtype='     . $graphtype .
@@ -148,13 +150,13 @@ class Keynote_Client
 				'&pagecomponent=' . $pagecomponent .
 				'&averagemethod=' . $averagemethod .
 				'&format='        . $this->format;
-		
-		if ($transpagelist != null) {
-			$trans = implode(',', $transpagelist);
-			$request .= '&transpagelist=' . $trans;
-		}
 
-		return $this->_getData($request);
+        if ($transpagelist != null) {
+            $trans = implode(',', $transpagelist);
+            $request .= '&transpagelist=' . $trans;
+        }
 
-	}
+        return $this->_getData($request);
+
+    }
 }
