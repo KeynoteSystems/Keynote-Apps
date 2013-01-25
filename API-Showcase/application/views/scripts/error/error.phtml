@@ -11,6 +11,7 @@
     </div>
 
     <?php if ('development' == APPLICATION_ENV): ?>
+
     <div class="alert alert-block">
         <h4>Exception information:</h4>
         <b>Message:</b>
@@ -25,8 +26,9 @@
     <div class="alert alert-block alert-info">
        <h4>Request Parameters:</h4>
        <pre><?php echo var_export($this->request->getParams(), 1) ?></pre>
-       <?php endif ?>
     </div>
+
+    <?php endif ?>
 
 </body>
 </html>
