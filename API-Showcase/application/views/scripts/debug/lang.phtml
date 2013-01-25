@@ -1,18 +1,18 @@
-<div class="debugController">
+<div>
     <h4>HTTP_ACCEPT_LANGUAGE</h4>
     <?php echo $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?>
 
     <h4>Zend_Registry::get('Zend_Translate')-&gt;getList()</h4>
     <?php print_r(Zend_Registry::get('Zend_Translate')->getList()) ?>
 
-    <h4>Test Translation of save</h4>
-    <?php echo $this->translate('save') ?>
+    <h4>Test Translation of availability</h4>
+    <?php echo $this->translate('availability') ?>
 
     <h4>Zend_Registry::get('locale')</h4>
     <?php echo Zend_Registry::get('locale') ?>
 
     <h4>Registry</h4>
-    <pre style="height: 300px">
+    <pre>
     <?php print_r (Zend_Registry::get('Zend_Translate')); ?>
     </pre>
 </div>
