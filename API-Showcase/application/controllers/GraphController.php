@@ -9,15 +9,15 @@ class GraphController extends Zend_Controller_Action
     private $_session = array();
 
     /**
-    * API
-    *
-    */
+     * API
+     *
+     */
     private $_api;
 
     /**
-    * Config
-    *
-    */
+     * Config
+     *
+     */
     private $_config;
 
     public function init()
@@ -67,9 +67,78 @@ class GraphController extends Zend_Controller_Action
 
         $this->_api->format = 'xml';
 
-        $this->view->days = $nDays;
         $this->view->graphType = ucfirst($this->_request->getParam('graphType'));
-        $this->view->graphData = $this->_api->getGraphData(array($this->_request->getParam('slotId')), $this->_request->getParam('graphType'), $this->_config['graph']['timezone'], 'relative', $nDays, $bSize, null, $this->_request->getParam('am'), array($this->_request->getParam('slotId')));
+
+        $graphData = $this->_api->getGraphData(array($this->_request->getParam('slotId')), $this->_request->getParam('graphType'), $this->_config['graph']['timezone'], 'relative', $nDays, $bSize, null, $this->_request->getParam('am'), array($this->_request->getParam('slotId')));
+
+        switch ($this->view->graphType) {
+            case 'Scatter':
+                $this->view->hcGraphType = 'scatter';
+                $this->view->step = 8;
+                $this->view->y = 15;
+                $this->view->title = 'Scatter Plot';
+                foreach ($graphData->list as $datapoint) {
+                    foreach ($datapoint->children() as $dp) {
+                        $t = date('D H:i:s', strtotime($dp->datetime));
+                        $time[] = $t;
+                        $perfData[] = array($t, (string)$dp->txn__summary->delta__msec / 1000);
+                    }
+                }
+                break;
+
+            case 'Time':
+                $this->view->hcGraphType = 'area';
+                $this->view->step = (3 * $nDays) / 86400;
+                $this->view->y = 15;
+                $this->view->title = $graphData->measurement->alias;
+                foreach ($graphData->measurement->bucket_data as $datapoint) {
+                    foreach ($datapoint as $dp) {
+                        $t = date('D H:i:s', strtotime($dp['name']));
+                        $time[] = $t;
+                        if ($dp->perf_data['value'] == '-') {
+                            $perfDataValue = 0;
+                        } else {
+                            $perfDataValue = $dp->perf_data['value'];
+                        }
+                        $perfData[] = array($t, (string)$perfDataValue);
+
+                        if ($dp->avail_data['value'] == '-') {
+                            $availDataValue = 0;
+                        } else {
+                            $availDataValue = $dp->avail_data['value'];
+                        }
+                        $availData[] = array($t, (string)$availDataValue);
+                    }
+                }
+                break;
+
+            case 'Agent':
+            case 'Backbone':
+            case 'City':
+            case 'Country':
+            case 'Region':
+                $this->view->hcGraphType = 'bar';
+                $this->view->step = 0;
+                $this->view->y = 0;
+                $this->view->title = $graphData->measurement->alias;
+                foreach ($graphData->measurement->bucket_data as $datapoint) {
+                    foreach ($datapoint as $dp) {
+                        $t = (string)$dp['name'];
+                        $time[] = $t;
+                        $perfData[] = array($t, (string)$dp->perf_data['value']);
+                        $availData[] = array($t, (string)$dp->avail_data['value']);
+
+                    }
+                    break;
+                }
+        }
+
+        $this->view->xTime = json_encode($time);
+        $this->view->perfDataPoints = json_encode($perfData, JSON_NUMERIC_CHECK);
+
+        if ($this->view->graphType != 'Scatter') {
+            $this->view->availDataPoints = json_encode($availData, JSON_NUMERIC_CHECK);
+        }
     }
 
 }
