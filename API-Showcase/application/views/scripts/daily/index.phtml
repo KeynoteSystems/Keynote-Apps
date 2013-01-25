@@ -1,6 +1,15 @@
-<h3>Performance - <?php echo $this->vPageCompoments?></h3>
+<h4>Performance - <?php echo $this->vPageCompoments?></h4>
+<p>
+Average time for full page(s) download.  Data is compared to last 28 days of history
+<span class="label label-warning">15% - 25% above last 28 days</span>
+<span class="label label-important">&gt; 25% above last 28 days</span>
+</p>
 <table class="table table-condensed table-bordered table-striped">
 <?php
+
+$warnCellColor = '#f89406; font-weight: bold; color: #FFFFFF';
+$critCellColor = '#953b39; font-weight: bold; color: #FFFFFF';
+
 $displayDate = '<th>Alias</th>';
 for ($i = 7; $i >= 1; $i--) {
     $date = strtotime(date("Y-m-d", strtotime($this->currentDay)) . " -" . $i ." day");
@@ -40,10 +49,10 @@ foreach ($this->perfData as $a => $p) {
             $cellColor = '';
             if ($pd['perf'] != '-' && $getAvg != '-') {
                 if (($pd['perf'] - $getAvg) / $pd['perf'] * 100 >= 15) {
-                    $cellColor = '#FFFF99; font-weight: bold';
+                    $cellColor = $warnCellColor;
                 }
                 if (($pd['perf'] - $getAvg) / $pd['perf'] * 100 >= 25) {
-                    $cellColor = '#FF9999; font-weight: bold';
+                    $cellColor = $critCellColor;
                 }
             }
 
@@ -55,7 +64,12 @@ foreach ($this->perfData as $a => $p) {
 
 ?>
 </table>
-<h3>Availability</h3>
+<h4>Availability</h4>
+<p>
+Average percentage of successful measurements during the period
+<span class="label label-warning">&lt; <?php echo $this->avail_warn ?>% > <?php echo $this->avail_crit ?></span>
+<span class="label label-important">&lt; <?php echo $this->avail_crit ?>%</span>
+</p>
 <table class="table table-condensed table-bordered table-striped">
 <?php
 echo $displayDate;
@@ -67,8 +81,12 @@ foreach ($this->perfData as $a => $p) {
         echo '<tr><td>' . $a . '</td>';
         foreach ($p as $pd) {
             $cellColor = '';
-            if ($pd['avail'] < $this->avail_warn && $pd['avail'] != '-') $cellColor = '#FFFF99; font-weight: bold';
-            if ($pd['avail'] < $this->avail_crit && $pd['avail'] != '-') $cellColor = '#FF9999; font-weight: bold';
+            if ($pd['avail'] < $this->avail_warn && $pd['avail'] != '-') {
+                $cellColor = $warnCellColor;
+            }
+            if ($pd['avail'] < $this->avail_crit && $pd['avail'] != '-') {
+                $cellColor = $critCellColor;
+            }
             echo '<td class="right" style="text-align: right; background-color:' . $cellColor . '">' . $pd['avail'];
             echo $pd['avail'] == '-' ? '' : '%';
             echo '</td>';
@@ -78,7 +96,12 @@ foreach ($this->perfData as $a => $p) {
 }
 ?>
 </table>
-<h3>Objects</h3>
+<h4>Objects</h4>
+<p>
+Average Objects downloaded.  Data is compared to last 28 days of history
+<span class="label label-warning">15% - 25% above last 28 days</span>
+<span class="label label-important">&gt; 25% above last 28 days</span>
+</p>
 <table class="table table-condensed table-bordered table-striped">
 <?php
 echo $displayDate;
@@ -94,10 +117,10 @@ foreach ($this->perfData as $a => $p) {
             $cellColor = '';
             if ($pd['objects'] != '-' && $getAvg != '-') {
                 if (($pd['objects'] - $getAvg) / $pd['objects'] * 100 >= 15) {
-                    $cellColor = '#FFFF99; font-weight: bold';
+                    $cellColor = $warnCellColor;
                 }
                 if (($pd['objects'] - $getAvg) / $pd['objects'] * 100 >= 25) {
-                    $cellColor = '#FF9999; font-weight: bold';
+                    $cellColor = $critCellColor;
                 }
             }
 
@@ -108,7 +131,12 @@ foreach ($this->perfData as $a => $p) {
 }
 ?>
 </table>
-<h3>Bytes Downloaded</h3>
+<h4>Bytes Downloaded</h4>
+<p>
+Average bytes downloaded.  Data is compared to last 28 days of history
+<span class="label label-warning">15% - 25% above last 28 days</span>
+<span class="label label-important">&gt; 25% above last 28 days</span>
+</p>
 <table class="table table-condensed table-bordered table-striped">
 <?php
 echo $displayDate;
@@ -125,10 +153,10 @@ foreach ($this->perfData as $a => $p) {
             $cellColor = '';
             if ($pd['bytes'] != '-' && $getAvg != '-') {
                 if (($pd['bytes'] - $getAvg) / $pd['bytes'] * 100 >= 15) {
-                    $cellColor = '#FFFF99; font-weight: bold';
+                    $cellColor = $warnCellColor;
                 }
                 if (($pd['bytes'] - $getAvg) / $pd['bytes'] * 100 >= 25) {
-                    $cellColor = '#FF9999; font-weight: bold';
+                    $cellColor = $critCellColor;
                 }
             }
             echo '<td style="text-align:right; background-color:' . $cellColor . '">' . number_format($pd['bytes']  / 1024, 0, '.',',') . ' Kb</td>' . PHP_EOL;
