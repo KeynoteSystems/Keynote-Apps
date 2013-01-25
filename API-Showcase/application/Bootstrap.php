@@ -9,8 +9,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 
     public function _initLogger()
     {
-        $this->bootstrap("log");
-        $logger = $this->getResource("log");
-        Zend_Registry::set("logger", $logger);
+        if ('development' == APPLICATION_ENV) {
+            $this->bootstrap("log");
+            $logger = $this->getResource("log");
+            Zend_Registry::set("logger", $logger);
+        }
     }
 }
