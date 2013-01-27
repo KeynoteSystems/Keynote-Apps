@@ -5,10 +5,11 @@ $send = $this->url(array('controller' => 'abc', 'action' => 'sendmail'));
 <form class="form-horizontal" method="post" action="/graph/generate">
     <fieldset>
         <legend>Graph Creator</legend>
+        
         <div class="control-group">
             <label class="control-label" for="slotId">Slot ID</label>
             <div class="controls">
-                <select id="slotId" name="slotId" placeholder="Slot ID">
+                <select id="slotId" name="slotId">
                 <?php foreach($this->slotIds as $alias => $sid): ?>
                     <option value="<?php echo $sid ?>">
                     <?php echo $alias ?>
@@ -17,15 +18,31 @@ $send = $this->url(array('controller' => 'abc', 'action' => 'sendmail'));
                 </select>
             </div>
         </div>
+                
         <div class="control-group">
-            <label class="control-label" for="Locations">Averaging Method</label>
+            <label class="control-label" for="averagingMethod">Averaging Method</label>
             <div class="controls">
-                <select id="am" name="am" placeholder="Averaging Method">
-                    <option value="AM">Arithmetric Mean</option>
-                    <option value="GM">Geometric Mean</option>
+                <label class="radio inline">
+                    <input type="radio" name="avms" id="am" value="GM" checked> Geometric Mean
+                </label>
+                <label class="radio inline">
+                    <input type="radio" name="avms" id="am" value="AM"> Arithmetic Mean
+                </label>
+            </div>
+        </div>            
+        
+        <div class="control-group">
+            <label class="control-label" for="pageComponent">Page Component</label>
+            <div class="controls">
+                <select id="pageComponent" name="pageComponent">
+                    <option value="U">User Time</option>
+                    <option value="T">Total/Network Time</option>
+                    <option value="Y">Bytes Downloaded</option>
+                    <option value="M">Object Count</option>
                 </select>
             </div>
-        </div>
+        </div>    
+        
         <div class="control-group">
             <label class="control-label" for="Days">No. of Days</label>
             <div class="controls">
@@ -39,24 +56,27 @@ $send = $this->url(array('controller' => 'abc', 'action' => 'sendmail'));
                 </select>
             </div>
         </div>
+        
         <div class="control-group">
             <label class="control-label" for="graphType">Graph Type</label>
             <div class="controls">
                 <select id="graphType" name="graphType">
-                    <option value="time">Perf/Avail by Time</option>
-                    <option value="agent">Perf/Avail by Agent</option>
-                    <option value="backbone">Perf/Avail by Carrier</option>
-                    <option value="city">Perf/Avail by City</option>
-                    <option value="country">Perf/Avail by Country</option>
-                    <option value="region">Perf/Avail by Region</option>
+                    <option value="time">Performance Trend</option>
+                    <option value="agent">Agent</option>
+                    <option value="backbone">Carrier</option>
+                    <option value="city">City</option>
+                    <option value="country">Country</option>
+                    <option value="region">Region</option>
                     <option value="scatter">Scatter Plot</option>
                 </select>
             </div>
         </div>
+        
         <div class="control-group">
             <div class="controls">
-                <button type="submit" class="btn btn-info">View Graph</button>
+                <button type="submit" class="btn btn-info">Create Graph</button>
             </div>
         </div>
+        
     </fieldset>
 </form>

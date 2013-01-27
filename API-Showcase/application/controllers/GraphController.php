@@ -69,8 +69,34 @@ class GraphController extends Zend_Controller_Action
 
         $this->view->graphType = ucfirst($this->_request->getParam('graphType'));
 
-        $graphData = $this->_api->getGraphData(array($this->_request->getParam('slotId')), $this->_request->getParam('graphType'), $this->_config['graph']['timezone'], 'relative', $nDays, $bSize, null, $this->_request->getParam('am'), array($this->_request->getParam('slotId')));
+        $graphData = $this->_api->getGraphData(array($this->_request->getParam('slotId')), $this->_request->getParam('graphType'), $this->_config['graph']['timezone'], 'relative', $nDays, $bSize, $this->_request->getParam('pageComponent'), $this->_request->getParam('am'), array($this->_request->getParam('slotId')));
 
+        switch ($this->_request->getParam('pageComponent')) {
+        	case 'U':
+        		$this->view->pageComponent = 'User Time (seconds)';
+        		$sp = "delta__user_msec";
+        		$this->view->gUnit = 's';
+        		break;
+        		
+        	case 'T':
+        		$this->view->pageCompoent = 'Total Time (seconds)';
+        		$sp= "delta__msec";
+        		$this->view->gUnit = 's';
+        		break;
+        		
+        	case 'Y':
+        		$this->view->pageComponent = 'Bytes Downloaded (Kb)';
+        		$sp = "resp__bytes";
+        		$this->view->gUnit = 'Kb';
+        		break;
+        		
+        	case 'M':
+        		$this->view->pageComponent = 'Object Count';
+        		$sp = "element__count";
+        		$this->view->gUnit = null;
+        		break;
+        }
+        
         switch ($this->view->graphType) {
             case 'Scatter':
                 $this->view->hcGraphType = 'scatter';
@@ -81,7 +107,7 @@ class GraphController extends Zend_Controller_Action
                     foreach ($datapoint->children() as $dp) {
                         $t = date('D H:i:s', strtotime($dp->datetime));
                         $time[] = $t;
-                        $perfData[] = array($t, (string)$dp->txn__summary->delta__msec / 1000);
+                        $perfData[] = array($t, (string)$dp->txn__summary->$sp / 1000);
                     }
                 }
                 break;

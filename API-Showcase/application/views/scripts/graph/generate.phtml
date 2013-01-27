@@ -37,19 +37,34 @@
          yAxis: {
              min: 0,
              title: {
-                 text: 'Performance (seconds)'
+                 text: '<?php echo $this->pageComponent ?>'
              }
          },
 
          tooltip: {
              formatter: function() {
-                 return '<b>' + this.x + '</b><br/>' + this.series.name + ': ' + this.y + ' s';
+                 return '<b>' + this.x + '</b><br/>' + this.series.name + ': ' + this.y + ' <?echo $this->gUnit ?>';
              }
          },
 
+         plotOptions: {
+             area: {
+                 marker: {
+                     enabled: false,
+                     symbol: 'circle',
+                     radius: 2,
+                     states: {
+                         hover: {
+                             enabled: true
+                         }
+                     }
+                 }
+             }
+         },
+         
          series: [
              {
-                 name: 'Performance',
+                 name: '<?php echo $this->pageComponent ?>',
                  data: <?php echo $this->perfDataPoints ?>
              }
          ]
@@ -99,9 +114,24 @@
              }
          },
 
+         plotOptions: {
+             area: {
+                 marker: {
+                     enabled: false,
+                     symbol: 'circle',
+                     radius: 2,
+                     states: {
+                         hover: {
+                             enabled: true
+                         }
+                     }
+                 }
+             }
+         },
+
          series: [
              {
-                 name: 'Performance',
+                 name: 'Availability',
                  data: <?php echo $this->availDataPoints ?>,
                  color: '#89854E'
              }
