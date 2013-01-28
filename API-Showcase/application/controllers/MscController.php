@@ -51,7 +51,7 @@ class MscController extends Zend_Controller_Action
                 list ($scriptName, $actionName, $url) = explode(',', $line);
 
                 $content = file_get_contents('../data/xml/' . $this->_request->getParam('scriptType') . '.xml');
-                $content = str_replace('http://www.google.com', $url, $content);
+                $content = str_replace('http://www.google.com/', $url, $content);
                 $content = str_replace('Google', $actionName, $content);
                 if ($this->_request->getParam('scriptType')) {
                     $content = str_replace('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', $this->create_guid('msc'), $content);
