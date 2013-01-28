@@ -53,8 +53,8 @@ class MscController extends Zend_Controller_Action
                 $content = file_get_contents('../data/xml/' . $this->_request->getParam('scriptType') . '.xml');
                 $content = str_replace('http://www.google.com/', $url, $content);
                 $content = str_replace('Google', $actionName, $content);
-                if ($this->_request->getParam('scriptType')) {
-                    $content = str_replace('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', $this->create_guid('msc'), $content);
+                if ($this->_request->getParam('scriptType') == 'mwp') {
+                    $content = str_replace('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', $this->create_guid('mwp'), $content);
                     $content = str_replace('ScriptName', $scriptName, $content);
                 }
                 $f = fopen('scripts/' . $scriptName . '.' . $ext, 'c');
