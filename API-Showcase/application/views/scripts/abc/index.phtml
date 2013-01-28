@@ -4,13 +4,13 @@ $send = $this->url(array('controller' => 'abc', 'action' => 'sendmail'));
 ?>
 <form class="form" method="post" action="/abc/generate">
   <fieldset>
-    <legend>Automatic Brick Creator</legend>
+    <legend>Automatic Brick Creator (<?php echo $this->locale ?>)</legend>
 
     <div class="alert alert-info">
     <strong>NOTE!</strong> Complete the form in full remembering to select the correct slot, no. of days, interval, mail subject etc.  Always view the brick before sending to ensure all looks OK!
     </div>
 
-    <h3>Contact &amp; Prospect Details</h3>
+    <h4>Contact &amp; Prospect Details</h4>
 
     <div class="row-fluid">
       <div class="span4">
@@ -49,7 +49,7 @@ $send = $this->url(array('controller' => 'abc', 'action' => 'sendmail'));
       </div>
     </div>
 
-    <h3>Brick Details</h3>
+    <h4>Brick Details</h4>
 
     <div class="row-fluid">
       <div class="span4">
