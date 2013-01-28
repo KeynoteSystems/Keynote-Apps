@@ -36,7 +36,7 @@ class MscController extends Zend_Controller_Action
                 $ext = 'krs';
                 break;
 
-            case 'msc':
+            case 'mwp':
                 $ext = 'kms';
                 break;
         }
@@ -55,6 +55,7 @@ class MscController extends Zend_Controller_Action
                 $content = str_replace('Google', $actionName, $content);
                 if ($this->_request->getParam('scriptType')) {
                     $content = str_replace('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', $this->create_guid('msc'), $content);
+                    $content = str_replace('ScriptName', $scriptName, $content);
                 }
                 $f = fopen('scripts/' . $scriptName . '.' . $ext, 'c');
 

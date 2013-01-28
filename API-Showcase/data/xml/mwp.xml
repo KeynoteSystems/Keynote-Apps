@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<TEST guid="{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx}" nbNode="1" nbPages="1" nbTest="0" refgrp="0" refid="" rid="-1" sa="1" timeout="60" userc="msc@keynote.com" userm="msc@keynote.com" vs="1.1">
+  <NODES><Node Name="SENDER" id="O"/></NODES>
+  <SCRIPTS>
+    <SCRIPT lkTimeout="60" nodeId="" timeout="60">
+      <task>
+        <SCRIPTS>
+          <SCRIPT>
+            <NOM><![CDATA[ScriptName]]></NOM>
+            <CMD><![CDATA[
+StartPage( "Page 1" );
+
+ClearLocalStorage();
+Page.setEndOfPageOnEndDOMMessage( 1 );
+Page.setEndOfPageOnHTTPInactivity( 2000 );
+Start("http://www.google.com/" );
+Page.clearEndOfPageSettings();
+]]></CMD>
+            <LISTACTION>
+              <ACTION name="ClearLocalStorage" pageId="1">
+                <Parameters/>
+              </ACTION>
+              <ACTION name="Start" pageId="1">
+                <Parameters>
+                  <Param name="Completion_Event" usevp="0">1</Param>
+                  <Param name="End_of_specific_content" usevp="0">0</Param>
+                  <Param name="content" usevp="0"></Param>
+                  <Param name="negation" usevp="0">0</Param>
+                  <Param name="xpath" usevp="0"></Param>
+                  <Param name="End_Of_Number_Of_URL" usevp="0">0</Param>
+                  <Param name="urlcount" usevp="0">0</Param>
+                  <Param name="endOnBrwsrFinishEvt" usevp="0">1</Param>
+                  <Param name="End_On_HTTP_Inactivity" usevp="0">1</Param>
+                  <Param name="timeOut" usevp="0">2000</Param>
+                  <Param name="End_On_Specific_URL_Response" usevp="0">0</Param>
+                  <Param name="CE_url" usevp="0"></Param>
+                  <Param name="url" usevp="0">http://www.google.com/</Param>
+                </Parameters>
+              </ACTION>
+            </LISTACTION>
+            <LISTPAGE>
+              <PAGE Name="Google" pageId="1"></PAGE>
+            </LISTPAGE>
+            <ScriptRecordInfo>
+              <Constructor>Apple</Constructor>
+              <Model>iPhone 5</Model>
+              <UserAgent guid="{DF42ECB7-15FB-419C-9F20-A5FAD487A0B5}">Mozilla/5.0 (iPhone; CPU iPhone OS 6_0 like Mac OS X) AppleWebKit/536.26 (KHTML, like Gecko) Version/6.0 Mobile/10A405 Safari/8536.25</UserAgent>
+            </ScriptRecordInfo>
+            <DownloadTime>1</DownloadTime>
+            <NumberOfPage>1</NumberOfPage>
+          </SCRIPT>
+        </SCRIPTS>
+      </task>
+    </SCRIPT>
+  </SCRIPTS>
+</TEST>
