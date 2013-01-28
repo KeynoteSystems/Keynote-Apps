@@ -27,7 +27,7 @@ class MscController extends Zend_Controller_Action
     {
         switch ($this->_request->getParam('scriptType')) {
             case 'bpdo':
-            case 'app:':
+            case 'app':
                 $ext = 'kht';
                 break;
 
