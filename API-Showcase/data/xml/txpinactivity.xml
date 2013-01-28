@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<script type="TransactionPerspective" version="11.1.155.234" guid="411658CB-1777-4DA6-8CF4-7213FCF77EA7" recorder="11.1.133.400" sav="1" xmlns="http://www.keynote.com/namespaces/txnp/script">
+	<name>
+		<![CDATA[Google]]>
+	</name>
+	<description>
+		<![CDATA[]]>
+	</description>
+	<settings>
+		<timeout>60</timeout>
+		<ignore_frame_errors>1</ignore_frame_errors>
+		<datamethod>0</datamethod>
+		<err_if_no_nw_activity>1</err_if_no_nw_activity>
+		<non_dom>0</non_dom>
+		<dialog auto-close="0"/>
+	</settings>
+	<actions>
+		<action type="Browser">
+			<name>
+				<![CDATA[Google]]>
+			</name>
+			<description>
+				<![CDATA[Google]]>
+			</description>
+			<step type="Navigate">
+				<context window="0" frame="0"/>
+				<parameter name="URL">
+					<variable type="Static">
+						<![CDATA[http://www.google.com/]]>
+					</variable>
+				</parameter>
+			</step>
+			<completion>
+				<window index="0" type="Network">
+					<event type="Inactivity" duration="1000"/>
+				</window>
+			</completion>
+		</action>
+	</actions>
+	<info OS="6.1.7601 Service Pack 1" IE="9.0.8112.16421" MSHTML="9.0.8112.16457" WinInet="9.0.8112.16457" WinHttp="6.1.7601.17514" MSXML6="6.30.7601.17988">
+		<ps e="0" d="0" s="0" el="0"/>
+	</info>
+	<report>
+		<![CDATA[<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><title>Script View</title><link rel="stylesheet" type="text/css" title="" href="../kite/Report.css"/></head><body><ul class="scriptviewer"><ul><li class='script_i2'><span class='script_i2_s'>Google</span></li><ul><li class='settings_i22'><span class='settings_i22_s'>Settings</span></li><ul><li class=''><span class='_s'>Timeout: 60 sec</span></li><li class=''><span class='_s'>IE Browser Mode: IE 9</span></li></ul></ul><li class='empty-line'><div></div></li><ul class="actionblock"><li class='action_i6'><span class='action_i6_s'>1.Google</span></li><ul><li class='description'><span class='description_s'>Google </span></li><li class='step_i11'><span class='step_i11_s'>Navigate to</span></li><ul><li class='parameter'><span class='parameter_s'>URL: http://www.google.com/</span></li></ul><li class='completion_i8'><span class='completion_i8_s'>Completion</span></li><ul><li class='window'><span class='window_s'>HTTP Messages</span></li><ul><li class='event'><span class='event_s'>Event: Inactivity - 1000 msec</span></li></ul></ul></ul></ul></ul></ul></body></html>]]>
+	</report>
+</script>

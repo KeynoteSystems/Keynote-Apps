@@ -1,0 +1,32 @@
+
+<form enctype="multipart/form-data" action="/msc/generate" method="post" class="form-horizontal">
+    <fieldset>
+        <legend>Mass Script Creator</legend>
+
+        <div class="control-group">
+            <label class="control-label" for="scriptType">Script Type</label>
+            <div class="controls">
+                <select id="scriptType" name="scriptType" required>
+                    <option value="bpdo">ApP BPDO</option>
+                    <option value="app">ApP Standard</option>
+                    <option value="txpdlc">TxP Download Cyler + Timer</option>
+                    <option value="txpinactivity">TxP HTTP Inactivity</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="urls">CSV</label>
+            <div class="controls">
+                <textarea class="input-xxlarge" rows="5" id="urls" name="urls" placeholder="ScriptName,ActionName,Url" required></textarea>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <div class="controls">
+                <button type="submit" class="btn btn-info">Generate Scripts</button>
+            </div>
+        </div>
+
+    </fieldset>
+</form>

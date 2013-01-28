@@ -1,0 +1,21 @@
+
+<h4>Creating scripts ...</h4>
+<table class="table table-striped">
+    <tr>
+        <th>Action Name</th>
+        <th>URL</th>
+        <th>Script Name</th>
+    </tr>
+    <?php foreach ($this->fw as $key => $v): ?>
+    <tr>
+        <td><?php echo $v[0] ?></td>
+        <td><?php echo $v[1] ?></td>
+        <td><?php echo $v[2] ?>.<?php echo $v[3] ?></td>
+    </tr>
+    <?php endforeach; ?>
+</table>
+
+<div class="alert alert-info">
+    <strong>Scripts Created!</strong>
+    <?php echo $this->numFiles ?> files were created and are available to download in <a href="<?php echo $this->downloadZip?>">zip file</a> format
+</div>
