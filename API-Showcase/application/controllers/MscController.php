@@ -56,7 +56,7 @@ class MscController extends Zend_Controller_Action
                     fwrite($f, $content);
                     fclose($f);
                 } else {
-                    echo 'Failed to update file';
+                    throw new Exception('Failed to update file');
                 }
 
                 array_push($files_to_zip, 'scripts/' . $scriptName . '.' . $ext);
@@ -74,45 +74,46 @@ class MscController extends Zend_Controller_Action
 
     }
 
-    function create_zip($files = array(), $destination = '', $overwrite = false) {
-        //if the zip file already exists and overwrite is false, return false
+    private function create_zip($files = array(), $destination = '', $overwrite = false) {
+        /**
+         * Check if the zip file already exists and overwrite is false, return false
+         */
         if(file_exists($destination) && !$overwrite) {
             return false;
         }
-        //vars
+
         $valid_files = array();
-        //if files were passed in...
-        if(is_array($files)) {
-            //cycle through each file
+
+        if (is_array($files)) {
             foreach($files as $f => $file) {
-                //make sure the file exists
+                /**
+                 * Check file(s) exist
+                 */
                 if(file_exists($file)) {
                     $valid_files[] = $file;
                 }
             }
         }
-        //if we have good files...
-        if(count($valid_files)) {
-            //create the archive
+
+        if (count($valid_files)) {
             $zip = new ZipArchive();
-            if($zip->open($destination, $overwrite ? ZIPARCHIVE::OVERWRITE : ZIPARCHIVE::CREATE) !== true) {
+            if ($zip->open($destination, $overwrite ? ZIPARCHIVE::OVERWRITE : ZIPARCHIVE::CREATE) !== true) {
                 return false;
             }
-            //add the files
+
             foreach($valid_files as $file) {
                 $zip->addFile($file,$file);
-                //unlink($file);
             }
-            //debug
+
             $this->view->numFiles =  $zip->numFiles;
-            //close the zip&mdashdone!
+
             $zip->close();
 
-            //check to make sure the file exists
+            /**
+             * Check to make sure the file exists
+             */
             return file_exists($destination);
-        }
-        else
-        {
+        } else {
             return false;
         }
     }
