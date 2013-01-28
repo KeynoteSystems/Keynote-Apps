@@ -35,6 +35,10 @@ class MscController extends Zend_Controller_Action
             case 'txpinactivity':
                 $ext = 'krs';
                 break;
+
+            case 'msc':
+                $ext = 'kms';
+                break;
         }
 
         $lines = explode("\n", $this->_request->getParam('urls'));
@@ -49,6 +53,9 @@ class MscController extends Zend_Controller_Action
                 $content = file_get_contents('../data/xml/' . $this->_request->getParam('scriptType') . '.xml');
                 $content = str_replace('http://www.google.com', $url, $content);
                 $content = str_replace('Google', $actionName, $content);
+                if ($this->_request->getParam('scriptType')) {
+                    $content = str_replace('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx', $this->create_guid('msc'), $content);
+                }
                 $f = fopen('scripts/' . $scriptName . '.' . $ext, 'c');
 
                 if($f) {
@@ -116,5 +123,28 @@ class MscController extends Zend_Controller_Action
         } else {
             return false;
         }
+    }
+
+    private function create_guid($namespace = '')
+    {
+        static $guid = '';
+        $uid = uniqid('', true);
+        $data = $namespace;
+        $data .= $_SERVER['REQUEST_TIME'];
+        $data .= $_SERVER['HTTP_USER_AGENT'];
+        $data .= $_SERVER['REMOTE_ADDR'];
+        $data .= $_SERVER['REMOTE_PORT'];
+        $hash = strtoupper(hash('ripemd128', $uid . $guid . md5($data)));
+        $guid =
+        substr($hash,  0,  8) .
+            '-' .
+        substr($hash,  8,  4) .
+            '-' .
+        substr($hash, 12,  4) .
+            '-' .
+        substr($hash, 16,  4) .
+            '-' .
+        substr($hash, 20, 12);
+        return $guid;
     }
 }
