@@ -1,7 +1,5 @@
 ﻿perf1;"How does your site perform compared to the industry best practice target of <strong>2 seconds</strong>?"
 
-greeting;"Dear %s,"
-
 intro1;"We recently conducted a study on your site's home page (<strong>%s</strong>) from <strong>%s locations</strong>."
 intro2;"The page was monitored every <strong>%s mins</strong> using a <strong>%s (%s)</strong> for the last <strong>%s days</strong>. This method allows for us to provide the industry's most accurate performance and availability metrics."
 intro3;"Would you like to learn more?  Then please do not hesitate to contact us."

@@ -1,8 +1,6 @@
 ﻿perf1;"Wie performant ist Ihre Webseite im Vergleich zum empfohlenen Branchenstandard von <strong>2 Sekunden</strong>?"
 
-greeting;"Hallo %s,"
-
-intro1;"Wir haben kürzlich eine Studie mit Ihrer Homepage durchgeführt (<strong>%s</strong>), über <strong>%s Standorte</strong>."
+intro1;"wir haben kürzlich eine Studie mit Ihrer Homepage durchgeführt (<strong>%s</strong>), über <strong>%s Standorte</strong>."
 intro2;"Die Seite wurde alle <strong>%s Minuten</strong> mittels <strong>%s (%s)</strong> in den letzten <strong>%s Tagen</strong> gemessen. Diese Methode erlaubt uns, die präzisesten Performance- und Verfügbarkeitsdaten der Branche zu liefern." 
 intro3;"Möchten Sie mehr darüber erfahren? Dann zögern Sie bitte nicht, uns zu kontaktieren."
 
