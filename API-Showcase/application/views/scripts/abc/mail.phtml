@@ -1,12 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Keynote - Website Performance &amp; Availability Summary</title>
 <style type="text/css">
 /* Client-specific Styles */
+#outlook a {
+	padding: 0;
+}
+
 body {
 	width: 100% !important;
 	-webkit-text-size-adjust: 100%;
 	-ms-text-size-adjust: 100%;
+	margin: 0;
+	padding: 0;
 }
 
 .bodytbl {
+	margin: 0;
+	padding: 0;
 	width: 100% !important;
 }
 
@@ -22,7 +35,7 @@ a img {
 }
 
 p {
-	/*margin: 1em 0;*/
+	margin: 1em 0;
 }
 
 table {
@@ -75,7 +88,14 @@ a:link,a:visited,a:hover {
 	color: #F4F4F4;
 }
 
+body {
+	margin: 0;
+	padding: 0;
+}
+
 .bodytbl {
+	margin: 0;
+	padding: 0;
 	-webkit-text-size-adjust: none;
 }
 
@@ -85,11 +105,21 @@ table {
 }
 
 div {
-	/*line-height: 20px;*/
+	line-height: 20px;
 }
 
 td,tr {
 	padding: 0;
+}
+
+ul {
+	margin-top: 24px;
+	margin-bottom: 24px;
+}
+
+li {
+	list-style: disc;
+	line-height: 24px;
 }
 
 a {
@@ -128,11 +158,10 @@ a {
 	font-weight: 100;
 }
 
-div.small {
+.small {
 	font-size: 10px;
 	line-height: 16px;
 	margin-top:8px;
-    color: #333333;
 }
 
 div.preheader {
@@ -144,6 +173,8 @@ div.preheader {
 	text-indent: -9999px;
 }
 </style>
+</head>
+<body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0">
     <center>
         <table class="bodytbl" width="100%" cellspacing="0" cellpadding="0">
             <tbody>
@@ -422,7 +453,6 @@ div.preheader {
                 </tr>
             </tbody>
         </table>
-            <?php if ($this->url() == '/abc/generate'): ?>
-    <a class="btn btn-success" href="/abc/sendmail"><i class="icon-white icon-envelope"></i> Send Brick</a>
-    <?php endif; ?>
     </center>
+</body>
+</html>
