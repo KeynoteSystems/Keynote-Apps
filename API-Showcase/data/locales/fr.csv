@@ -1,7 +1,5 @@
 ﻿perf1;"Quel est le temps d'accès à votre site comparé à la performance de référence du marché à <strong>2 secondes</strong>?"
 
-greeting;"Chère/Cher %s,"
-
 intro1;"Nous avons récemment réalisé une étude de la page d'accueil de votre site (<strong>%s</strong>) depuis <strong>%s points de mesure</strong>."
 intro2;"La page était monitorée toutes les <strong>%s minutes</strong> en utilisant un <strong>%s (%s)</strong> pendant les derniers <strong>%s jours</strong>. Cette approche permet de fournir les indicateurs de performance et de disponibilité les plus précis."
 intro3;"Souhaitez-vous en savoir davantage? N'hésitez pas à nous contacter."
