@@ -135,4 +135,25 @@
 
     </div>
 
-    <?php echo $this->render('dashboard/footer.phtml') ?>
+
+<script>
+$(function() {
+    $( "#sortable" ).sortable({
+        handle: '.widget-header',
+        cursor: 'move',
+        revert: true
+    });
+    $( "#sortable2" ).sortable({
+        handle: '.widget-header',
+        cursor: 'move',
+        revert: true
+    });
+    $( "#sortable3" ).sortable({
+        handle: '.widget-header',
+        cursor: 'move',
+        revert: true
+    });
+
+    $("div").disableSelection();
+});
+</script>

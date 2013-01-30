@@ -13,18 +13,24 @@ class AbcController extends Zend_Controller_Action
      */
     private $_config;
 
+    /**
+     * Session
+     * Enter description here ...
+     */
+    private $_session;
+
     public function init()
     {
         $this_config = Zend_Registry::get('config');
 
         $this->view->locale = Zend_Registry::get('locale');
 
-        $session = new Zend_Session_Namespace('DASHBOARD');
+        $this->_session = new Zend_Session_Namespace('DASHBOARD');
 
         $this->_api = new Keynote_Client();
 
-        if ($session->apiKey) {
-            $this->_api->api_key = $session->apiKey;
+        if ($this->_session->apiKey) {
+            $this->_api->api_key = $this->_session->apiKey;
         } else {
             $this->_redirect('index');
         }
@@ -57,27 +63,31 @@ class AbcController extends Zend_Controller_Action
     {
         $this->abcContent($this->_request->getParams());
 
-        $this->_helper->layout->disableLayout();
+        $this->_session->abcParams = $this->_request->getParams();
+
+        //$this->_helper->layout->disableLayout();
 
         $this->view->currentDate = date('Y-m-d');
     }
 
     public function sendmailAction()
     {
-        $this->abcContent($this->_request->getParams());
+        //$this->abcContent($this->_request->getParams());
+        $this->abcContent($this->_session->abcParams);
 
-        $htmlString = $this->view->render('abc/generate.phtml');
+        $htmlString = $this->view->render('abc/mail.phtml');
 
         $this->view->message = "<div class='alert alert-success'>Your mail has been successfully sent!</div>";
 
         $mail = new Zend_Mail('UTF-8');
-        $mail->addTo($this->_request->getParam('mailTo'), $this->_request->getParam('prospectName'));
-        $mail->setFrom($this->_request->getParam('mailFrom'), $this->_request->getParam('fullName'));
-        if ($this->_request->getParam('ccAddress')) {
-            $mail->addCc($this->_request->getParam('ccAddress'));
+        //$mail->addTo($this->_request->getParam('mailTo'), $this->_request->getParam('prospectName'));
+        $mail->addTo($this->_session->abcParams['mailTo'], $this->_session->abcParams['prospectName']);
+        $mail->setFrom($this->_session->abcParams['mailFrom'], $this->_session->abcParams['fullName']);
+        if ($this->_session->abcParams['ccAddress']) {
+            $mail->addCc($this->_session->abcParams['ccAddress']);
         }
-        $mail->addBcc($this->_request->getParam('mailFrom'));
-        $mail->setSubject($this->_request->getParam('mailSubject'));
+        $mail->addBcc($this->_session->abcParams['mailFrom']);
+        $mail->setSubject($this->_session->abcParams['mailSubject']);
         $mail->setBodyHtml($htmlString);
         $mail->send();
     }
