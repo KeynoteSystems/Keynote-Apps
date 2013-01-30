@@ -72,7 +72,6 @@ class AbcController extends Zend_Controller_Action
 
     public function sendmailAction()
     {
-        //$this->abcContent($this->_request->getParams());
         $this->abcContent($this->_session->abcParams);
 
         $htmlString = $this->view->render('abc/mail.phtml');
@@ -80,11 +79,11 @@ class AbcController extends Zend_Controller_Action
         $this->view->message = "<div class='alert alert-success'>Your mail has been successfully sent!</div>";
 
         $mail = new Zend_Mail('UTF-8');
-        //$mail->addTo($this->_request->getParam('mailTo'), $this->_request->getParam('prospectName'));
         $mail->addTo($this->_session->abcParams['mailTo'], $this->_session->abcParams['prospectName']);
         $mail->setFrom($this->_session->abcParams['mailFrom'], $this->_session->abcParams['fullName']);
         if ($this->_session->abcParams['ccAddress']) {
-            $mail->addCc($this->_session->abcParams['ccAddress']);
+        	$cc = explode(',', $this->_session->abcParams['ccAddress']);
+            $mail->addCc($cc);
         }
         $mail->addBcc($this->_session->abcParams['mailFrom']);
         $mail->setSubject($this->_session->abcParams['mailSubject']);
