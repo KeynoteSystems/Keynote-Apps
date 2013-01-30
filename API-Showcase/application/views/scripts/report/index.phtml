@@ -1,12 +1,5 @@
 <style type="text/css">
-td {
-	margin-left: 5px;
-}
-
-td,th {
-	padding-left: 10px;
-}
-
+/*
 th {
 	text-align: left;
 	font-size: 12px;
@@ -22,15 +15,16 @@ tr.alarm th {
 	font-style: italic;
 	color: blue;
 }
-
+*/
 .enabled, .no_expire {
-	background: url(../images/flag_green.png) no-repeat 5px 10px;
+	background: url(../images/flag_green.png) no-repeat 2px 6px;
 }
 
 .disabled, .due_expire {
-	background: url(../images/flag_red.png) no-repeat 5px 10px;
+	background: url(../images/flag_red.png) no-repeat 2px 6px;
 }
 
+/*
 .product {
 	font-weight: bold;
 	font-size: 14px;
@@ -38,7 +32,7 @@ tr.alarm th {
 	color: #fff;
 	text-shadow: rgba(0, 0, 0, 1) 1px 1px 0;
 }
-
+*/
 .expired {
 	background-color: #ff9999;
 	font-style: italic;
@@ -66,7 +60,7 @@ tr.alarm th {
 	font-weight: bold;
 }
 </style>
-<table class="table">
+<table class="table table-condensed table-bordered">
 <?php
 $cDate = date('Y-m-d H:i:s');
 foreach ($this->data->product as $a) {
@@ -96,8 +90,8 @@ foreach ($this->data->product as $a) {
 				break;
 		}
 
-		echo "<tr><td colspan='9' class='product'>" . $name . " - " . $cDate . "</td></tr>";
-		echo"<tr><th style'width:30px'>&nbsp;</th><th style='width:75px'>Slot ID</th><th style='width:350px'>Slot Alias</th><th style='text-align: center; width:75px'>Pages</th><th>Agent Group</th><th></th></tr>";
+		echo "<tr><th colspan='9' class='product'>" . $name . " - " . $cDate . "</th></tr>";
+		echo"<tr><th>&nbsp;&nbsp;&nbsp;</th><th>Slot ID</th><th>Slot Alias</th><th style='text-align: center;'>Pages</th><th>Agent Group</th><th></th></tr>";
 	}
 
 	foreach ($a->slot as $b) {
@@ -120,6 +114,7 @@ foreach ($this->data->product as $a) {
 		echo "<td style='text-align: center'>" . count($nPages) . "</td>";
 		echo "<td>" . $b->agent_name . "</td>";
 		echo "<td>" . $expire . "</td>";
+		
 		foreach ($this->alarm->alarm as $i) {
 
 			if ($i->slot_id == $b->slot_id) {
@@ -134,11 +129,11 @@ foreach ($this->data->product as $a) {
 		foreach ($this->alarm->alarm as $i) {
 
 			if ($i->slot_id == $b->slot_id) {
-				if ($i->slot_id == $u_slotId[$count]) {
+				//if ($i->slot_id == $u_slotId[$count]) {
 					//echo "<tr class='alarm'><th></th><th style='width:100px'>Alarm Alias</th><th style='width:50px'>Perf</th><th style='width:150px'>Act / Warn / Crit</th><th style='width:50px'>Avail</th><th>Act / Warn / Crit</th></tr>";
-					echo "<tr class='alarm'><th></th><th style='width:300px'>Alarm Alias</th><th style='width:150px'>Act / Warn / Crit</th><th style='width:150px'>Act / Warn / Crit</th><th colspan='2'>Comment</th></tr>";
+				//	echo "<tr class='alarm'><th></th><th>Alarm Alias</th><th>Act / Warn / Crit</th><th>Act / Warn / Crit</th><th colspan='2'>Comment</th></tr>";
 
-				}
+				//}
 				$count++;
 				$no++;
 				$zeroPerfValue = (trim($i->perf_alarm_email) == false) ? 'disabled' : 'enabled';
