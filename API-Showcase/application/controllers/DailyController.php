@@ -7,9 +7,26 @@ class DailyController extends Zend_Controller_Action
 	 * @var array
 	 */
 	private $_session = array();
+	
+	private $_cache;
 
 	public function init()
 	{
+		$frontendOptions = array(
+				'lifetime' => 86400, // cache lifetime of 2 hours
+				'automatic_serialization' => false
+		);
+		
+		$backendOptions = array(
+				'cache_dir' => '../data/cache' // Directory where to put the cache files
+		);
+		
+		// getting a Zend_Cache_Core object
+		$this->_cache = Zend_Cache::factory('Page',
+				'File',
+				$frontendOptions,
+				$backendOptions);
+		
 		$config = Zend_Registry::get('config');
 
 		$this->view->locale = Zend_Registry::get('locale');
@@ -23,8 +40,14 @@ class DailyController extends Zend_Controller_Action
 		} else {
 			$this->_redirect('index');
 		}
-
-		$slotData = $api->getSlotMetaData();
+		
+		if (($slotData = $this->_cache->load('slotData_' . Zend_Session::getId())) === false ) {
+			
+			$slotData = $api->getSlotMetaData();
+		
+			$this->_cache->save($slotData, 'slotData_' . Zend_Session::getId());
+		}
+		
 
 		$product = $this->_request->getParam('product');
 
@@ -70,10 +93,20 @@ class DailyController extends Zend_Controller_Action
 
 		$this->view->currentDay = date('Y-m-d');
 
-		$week = $api->getGraphData($slotIds, 'time', $config['graph']['timezone'], 'relative', 604800, 86400, $pageComponents, 'GM', $slotIds);
+		if (($week = $this->_cache->load($product . '_week_'  . Zend_Session::getId())) === false ) {
+				
+			$week = $api->getGraphData($slotIds, 'time', $config['graph']['timezone'], 'relative', 604800, 86400, $pageComponents, 'GM', $slotIds);
+		
+			$this->_cache->save($week, $product . '_week_'  . Zend_Session::getId());
+		}
 
-		$month = $api->getGraphData($slotIds, 'time', $config['graph']['timezone'], 'relative', 2419200, 604800, $pageComponents, 'GM', $slotIds);
-
+		if (($month = $this->_cache->load($product . '_month_' . Zend_Session::getId())) === false ) {
+		
+            $month = $api->getGraphData($slotIds, 'time', $config['graph']['timezone'], 'relative', 2419200, 604800, $pageComponents, 'GM', $slotIds);
+					
+			$this->_cache->save($month, $product . '_month_'  . Zend_Session::getId());
+		}
+		
 		foreach ($week->measurement as $wm) {
 			$alias = $wm->alias;
 
@@ -161,7 +194,7 @@ class DailyController extends Zend_Controller_Action
 
 	public function indexAction()
 	{
-		//$this->_helper->layout()->setLayout('daily');
+		
 	}
 
 	public function createmailAction()
