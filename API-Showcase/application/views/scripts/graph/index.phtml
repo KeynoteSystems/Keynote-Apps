@@ -1,11 +1,12 @@
+<div class="hero-unit">
+  <h1>Graph Creator</h1>
+  <p>Easily generate performance and scatter plot graphs.  Select time period, page component and averaging method.</p>
+</div>
 <?php
 $view = $this->url(array('controller' => 'abc', 'action' => 'generate'));
 $send = $this->url(array('controller' => 'abc', 'action' => 'sendmail'));
 ?>
 <form class="form-horizontal" method="post" action="/graph/generate">
-    <fieldset>
-        <legend>Graph Creator</legend>
-        
         <div class="control-group">
             <label class="control-label" for="slotId">Slot ID</label>
             <div class="controls">
@@ -77,6 +78,4 @@ $send = $this->url(array('controller' => 'abc', 'action' => 'sendmail'));
                 <button type="submit" class="btn btn-info">Create Graph</button>
             </div>
         </div>
-        
-    </fieldset>
 </form>
