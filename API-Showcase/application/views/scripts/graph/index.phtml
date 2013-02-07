@@ -19,7 +19,7 @@ $send = $this->url(array('controller' => 'abc', 'action' => 'sendmail'));
                 </select>
             </div>
         </div>
-                
+
         <div class="control-group">
             <label class="control-label" for="averagingMethod">Averaging Method</label>
             <div class="controls">
@@ -30,8 +30,8 @@ $send = $this->url(array('controller' => 'abc', 'action' => 'sendmail'));
                     <input type="radio" name="avms" id="am" value="AM"> Arithmetic Mean
                 </label>
             </div>
-        </div>            
-        
+        </div>
+
         <div class="control-group">
             <label class="control-label" for="pageComponent">Page Component</label>
             <div class="controls">
@@ -42,22 +42,26 @@ $send = $this->url(array('controller' => 'abc', 'action' => 'sendmail'));
                     <option value="M">Object Count</option>
                 </select>
             </div>
-        </div>    
-        
+        </div>
+
         <div class="control-group">
             <label class="control-label" for="Days">No. of Days</label>
             <div class="controls">
+            <?php $secondsDay = 86400 ?>
                 <select id="Days" name="Days">
-                    <option value="86400">1 Day</option>
-                    <option value="172800">2 Day</option>
-                    <option value="259200">3 Day</option>
-                    <option value="345600">4 Day</option>
-                    <option value="432000">5 Day</option>
-                    <option value="604800">1 Week</option>
+                    <option value="<?php echo $secondsDay ?>">1 Day</option>
+                    <option value="<?php echo $secondsDay * 2 ?>">2 Day</option>
+                    <option value="<?php echo $secondsDay * 3 ?>">3 Day</option>
+                    <option value="<?php echo $secondsDay * 4 ?>">4 Day</option>
+                    <option value="<?php echo $secondsDay * 5 ?>">5 Day</option>
+                    <option value="<?php echo $secondsDay * 7 ?>">1 Week</option>
+                    <option value="<?php echo $secondsDay * 14 ?>">2 Weeks</option>
+                    <option value="<?php echo $secondsDay * 21 ?>">3 Weeks</option>
+                    <option value="<?php echo $secondsDay * 28 ?>">4 Weeks</option>
                 </select>
             </div>
         </div>
-        
+
         <div class="control-group">
             <label class="control-label" for="graphType">Graph Type</label>
             <div class="controls">
@@ -72,7 +76,7 @@ $send = $this->url(array('controller' => 'abc', 'action' => 'sendmail'));
                 </select>
             </div>
         </div>
-        
+
         <div class="control-group">
             <div class="controls">
                 <button type="submit" class="btn btn-info">Create Graph</button>

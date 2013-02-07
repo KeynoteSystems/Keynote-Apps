@@ -11,7 +11,8 @@
              renderTo: 'chart-perf',
              type: '<?php echo $this->hcGraphType ?>',
              height: 295,
-             reflow: true
+             reflow: true,
+             zoomType: 'xy'
          },
 
          legend: false,
@@ -61,7 +62,7 @@
                  }
              }
          },
-         
+
          series: [
              {
                  name: '<?php echo $this->pageComponent ?>',
@@ -77,7 +78,9 @@
              renderTo: 'chart-avail',
              type: '<?php echo $this->hcGraphType ?>',
              height: 295,
-             reflow: true
+             reflow: true,
+             zoomType: 'xy'
+
          },
 
          legend: false,

@@ -77,26 +77,26 @@ class GraphController extends Zend_Controller_Action
         		$sp = "delta__user_msec";
         		$this->view->gUnit = 's';
         		break;
-        		
+
         	case 'T':
-        		$this->view->pageCompoent = 'Total Time (seconds)';
+        		$this->view->pageComponent = 'Total Time (seconds)';
         		$sp= "delta__msec";
         		$this->view->gUnit = 's';
         		break;
-        		
+
         	case 'Y':
         		$this->view->pageComponent = 'Bytes Downloaded (Kb)';
         		$sp = "resp__bytes";
         		$this->view->gUnit = 'Kb';
         		break;
-        		
+
         	case 'M':
         		$this->view->pageComponent = 'Object Count';
         		$sp = "element__count";
         		$this->view->gUnit = null;
         		break;
         }
-        
+
         switch ($this->view->graphType) {
             case 'Scatter':
                 $this->view->hcGraphType = 'scatter';
@@ -105,7 +105,7 @@ class GraphController extends Zend_Controller_Action
                 $this->view->title = 'Scatter Plot';
                 foreach ($graphData->list as $datapoint) {
                     foreach ($datapoint->children() as $dp) {
-                        $t = date('D H:i:s', strtotime($dp->datetime));
+                        $t = date('d/m H:i:s', strtotime($dp->datetime));
                         $time[] = $t;
                         $perfData[] = array($t, (string)$dp->txn__summary->$sp / 1000);
                     }
@@ -119,7 +119,7 @@ class GraphController extends Zend_Controller_Action
                 $this->view->title = $graphData->measurement->alias;
                 foreach ($graphData->measurement->bucket_data as $datapoint) {
                     foreach ($datapoint as $dp) {
-                        $t = date('D H:i:s', strtotime($dp['name']));
+                        $t = date('d/m H:i:s', strtotime($dp['name']));
                         $time[] = $t;
                         if ($dp->perf_data['value'] == '-') {
                             $perfDataValue = 0;
