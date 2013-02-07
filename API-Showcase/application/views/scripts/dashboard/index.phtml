@@ -137,6 +137,7 @@
 
 
 <script>
+  /*
 $(function() {
     $( "#sortable" ).sortable({
         handle: '.widget-header',
@@ -156,4 +157,12 @@ $(function() {
 
     $("div").disableSelection();
 });
+  */
+$(function() {
+	  $(".widget").draggable({
+		  grid: [1,1],
+		  containment: "#sortable"
+	  })
+  });
+  
 </script>
