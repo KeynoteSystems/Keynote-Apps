@@ -1,0 +1,168 @@
+<style type="text/css">
+th {
+	text-align: left;
+	background-color: #ccc;
+	border-bottom: 1px solid #888;
+}
+
+tr.alarm th {
+	background-color: #f9f9f9;
+	border-top: 1px solid #ccc;
+	border-bottom: 1px solid #eee;
+	font-size: 10px;
+	color: blue;
+}
+
+.enabled, .no_expire {
+	background: url(../images/flag_green.png) no-repeat 4px 6px;
+}
+
+.disabled, .due_expire {
+	background: url(../images/flag_red.png) no-repeat 4px 6px;
+}
+
+.product {
+	font-weight: bold;
+	background-color: #888;
+	color: #fff;
+	text-shadow: rgba(0, 0, 0, 1) 1px 1px 0;
+}
+
+.expired {
+	background-color: #ff9999;
+	font-style: italic;
+	display: none;
+}
+
+.active {
+	background-color: #f1f1f1;
+	border-top: 1px solid #ccc;
+}
+
+.ok {
+	color: green;
+}
+
+.warn {
+	color: orange;
+	font-weight: bold;
+}
+
+.crit {
+	color: red;
+	font-weight: bold;
+}
+</style>
+<table class="table table-condensed">
+<?php
+$cDate = date('Y-m-d H:i:s');
+foreach ($this->data->product as $a) {
+
+	if ($a->slot != null) {
+		switch ($a->name) {
+			case 'ApP':
+				$name = 'ApP - Application Perspective (Emulated Browser)';
+				break;
+			case 'TxP':
+				$name = 'TxP - Transaction Perspective (Real Browser)';
+				break;
+			case 'MWP':
+				$name = 'MWP - Mobile Web Perspective';
+				break;
+			case 'MDP':
+				$name = 'MDP - Mobile Device Perspective';
+				break;
+			case 'CApP':
+				$name = 'CApP - Cloud Application Perspective (Emulated Browser)';
+				break;
+			case 'LastMile':
+				$name = 'TxP LM - Transaction Perspective LastMile (Real Browser)';
+				break;
+			case 'STR':
+				$name = 'STR - Streaming Perspective';
+				break;
+		}
+
+		echo "<tr><td colspan='9' class='product'>" . $name . " - " . $cDate . "</td></tr>";
+		echo"<tr><th>&nbsp;&nbsp;</th><th>Slot ID</th><th>Slot Alias</th><th style='text-align: center'>Pages</th><th>Agent Group</th><th></th></tr>";
+	}
+
+	foreach ($a->slot as $b) {
+		$comment = '';
+		$endDate = $b->end_date;
+		$nPages = explode(',', $b->pages);
+		$fontColor = ($endDate < $cDate) ? 'expired' : 'active';
+		$daysLeft = strtotime($endDate) - strtotime($cDate);
+
+		$expire = '';
+		$flag = 'no_expire';
+		if (ceil($daysLeft/86400 < 30)) {
+			$expire = 'Measurement due to expire in ' . ceil($daysLeft/86400) . ' days';
+			$flag = 'due_expire';
+		}
+		echo "<tr class=\"" . $fontColor. "\">";
+		echo "<td class=\"" . $flag . "\"></td>";
+		echo "<td>" . $b->slot_id . "</td>";
+		echo "<td>" . $b->slot_alias . "</td>";
+		echo "<td style='text-align: center'>" . count($nPages) . "</td>";
+		echo "<td>" . $b->agent_name . "</td>";
+		echo "<td>" . $expire . "</td>";
+		foreach ($this->alarm->alarm as $i) {
+
+			if ($i->slot_id == $b->slot_id) {
+				$ids = array($i->slot_id);
+				$u_slotId = array_unique($ids);
+
+			}
+
+		}
+		$count = 0;
+		$no = 0;
+
+		foreach ($this->alarm->alarm as $i) {
+
+			if ($i->slot_id == $b->slot_id) {
+				//if ($i->slot_id == $u_slotId[$count]) {
+					//echo "<tr class='alarm'><th></th><th colspan='2'>Alarm Alias</th><th>Act / Warn / Crit</th><th>Act / Warn / Crit</th><th>Comment</th></tr>";
+
+				//}
+				$count++;
+				$no++;
+				$zeroPerfValue = (trim($i->perf_alarm_email) == false) ? 'disabled' : 'enabled';
+				$zeroAvailValue = (trim($i->avail_alarm_email) == false) ? 'disabled' : 'enabled';
+
+				echo "<tr style='background-color:#fff; font-size:10px'>";
+				echo "<td></td>";
+				echo "<td colspan='2' style='color: blue'>" . $no . ". " . $i->alias . "</td>";
+				//echo "<td class=\"" . $zeroPerfValue . "\">&nbsp;</td>";
+
+				$class = 'ok';
+				//if ($i->perf_actual > $i->perf_static_warning && $i->perf_actual < $i->perf_static_crtical) {
+				if ($i->perf_actual > $i->perf_static_warning) {
+					$class = 'warn';
+					$comment = 'Exceeds performance warning threshold';
+				}
+				if ($i->perf_actual > $i->perf_static_critical) {
+					$class = 'crit';
+					$comment = 'Exceeds performance critical threshold';
+				}
+				echo "<td><span class='" . $class . "'>" . $i->perf_actual . "s</span> / <span class='warn' style='font-weight:normal'>" . $i->perf_static_warning . "s</span> / <span class='crit'i style='font-weight:normal'>" . $i->perf_static_critical . "s</span></td>";
+
+				//echo "<td class=\"" . $zeroAvailValue . "\">&nbsp;</td>";
+
+
+				echo "<td>" . $i->avail_actual . "% / " . $i->avail_warning . "% / " . $i->avail_critical . "%</td><td style='color:red; font-style: normal'>" . $comment . "</td><td></td></tr>";
+
+
+			}
+
+
+		}
+
+		echo "</tr>";
+	}
+
+}
+
+?>
+</table>
