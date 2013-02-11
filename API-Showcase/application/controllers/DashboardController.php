@@ -22,8 +22,6 @@ class DashboardController extends Zend_Controller_Action
 	{
 	    $this->_config = Zend_Registry::get('config');
 
-		$this->view->locale = Zend_Registry::get('locale');
-
 		$this->_session = new Zend_Session_Namespace('DASHBOARD');
 
 		$this->_helper->layout()->setLayout('dashboard');
@@ -64,7 +62,7 @@ class DashboardController extends Zend_Controller_Action
 		$this->view->slotId = $this->slotId;
 
 		//$this->view->apiKey = $config->general->apiKey;
-		
+
 		foreach ($this->dashboard->product as $p) {
 
 			foreach ($p->measurement as $m) {
@@ -78,7 +76,7 @@ class DashboardController extends Zend_Controller_Action
 
 			}
 		}
-		
+
 	}
 
 	public function indexAction()

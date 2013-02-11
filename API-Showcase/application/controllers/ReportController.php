@@ -17,8 +17,6 @@ class ReportController extends Zend_Controller_Action
     {
         $config = Zend_Registry::get('config');
 
-        $this->view->locale = Zend_Registry::get('locale');
-
         $this->_session = new Zend_Session_Namespace('DASHBOARD');
 
         $url = Zend_Controller_Front::getInstance()->getRequest()->getRequestUri();
