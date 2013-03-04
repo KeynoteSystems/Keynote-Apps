@@ -1,23 +1,21 @@
 function getData(widgetId, type) {
 	rndTimer = Math.floor(Math.random() * 5000 + 60000);
-
-	var url = '/dashboard/widget/type/' + type;
-	$.getJSON(url, function(json) {
-		$('#widget-id-' + widgetId + ' .alias').text(json.name);
-		$('#widget-id-' + widgetId + ' .perf').text(json.perf + json.symbol)
-				.attr('style', 'color:' + json.color);
-		$('#widget-id-' + widgetId + ' .previous').removeClass(
-				'up-arrow down-arrow');
-        $('#widget-id-' + widgetId + ' .sub-info').text('Last 15 minutes');
-
-		$('#widget-id-' + widgetId + ' .previous').text(
-				json.previous + json.symbol).addClass(json.arrow + '-arrow');
+	
+	$.ajax({
+		cache:false,
+		success: function(json) {
+			$('#widget-id-' + widgetId + ' .alias').text(json.name);
+			$('#widget-id-' + widgetId + ' .perf').text(json.perf + json.symbol).attr('style', 'color:' + json.color);
+			$('#widget-id-' + widgetId + ' .previous').removeClass('up-arrow down-arrow');
+	        $('#widget-id-' + widgetId + ' .sub-info').text('Last 15 minutes');
+			$('#widget-id-' + widgetId + ' .previous').text(json.previous + json.symbol).addClass(json.arrow + '-arrow');
+		},
+		url: '/dashboard/widget/type/' + type
 	});
 
 	timer = setTimeout(function() {
 		getData(widgetId, type);
 	}, rndTimer);
-	//console.log('Stat - ' + type + ': ' + rndTimer);
 }
 
 function wClock() {
