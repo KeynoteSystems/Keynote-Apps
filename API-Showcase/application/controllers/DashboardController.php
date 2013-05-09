@@ -206,7 +206,7 @@ class DashboardController extends Zend_Controller_Action
 
             foreach ($a->measurement as $b) {
 
-                $t[][] = "<a href=\"highchart.php?slot=" . $b->id ."\" class=\"dashboard-link\">" . $b->alias . "</a>";
+                $t[][] = '<a href="/graph/generate?slotId=' . $b->id. '&graphType=time&Days=86400&pageComponent=U&am=GM">' . $b->alias . '</a>';
 
                 foreach ($b->perf_data as $c) {
                     $warn = $b->threshold_data[0]->value;
