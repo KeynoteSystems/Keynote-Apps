@@ -6,9 +6,9 @@
 
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script type="text/javascript">
-     var chart = new Highcharts.Chart({
+     $(function () {
+         $('#chart-perf').highcharts({
          chart: {
-             renderTo: 'chart-perf',
              type: '<?php echo $this->hcGraphType ?>',
              height: 295,
              reflow: true,
@@ -63,19 +63,17 @@
              }
          },
 
-         series: [
-             {
+         series: [{
                  name: '<?php echo $this->pageComponent ?>',
                  data: <?php echo $this->perfDataPoints ?>
-             }
-         ]
-
+         }]
+         })
      });
 
      <?php if ($this->graphType != 'Scatter'):?>
-     var chart = new Highcharts.Chart({
+     $(function () {
+         $('#chart-avail').highcharts({
          chart: {
-             renderTo: 'chart-avail',
              type: '<?php echo $this->hcGraphType ?>',
              height: 295,
              reflow: true,
@@ -132,14 +130,12 @@
              }
          },
 
-         series: [
-             {
+         series: [{
                  name: 'Availability',
                  data: <?php echo $this->availDataPoints ?>,
                  color: '#89854E'
-             }
-         ]
-
+         }]
+         })
      });
      <?php endif; ?>
 </script>
