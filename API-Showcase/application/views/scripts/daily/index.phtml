@@ -1,5 +1,61 @@
+<?php
+/**
+ * This file is located at <strong>views/scripts/daily/index.phtml</strong>. 
+ * 
+ * This contains the view for the DailyReport.
+ * 
+ * The Daily Report showscases the data returned by the `getgraphmetadata`
+ * API method. displays the Time Performance, Bytes Downloaded and Object 
+ * Count data for every active slot all the slots of a product.
+ * 
+ * The data for this view must be setup by the controller before the view
+ * can be invoked. The view data is passed as a multidimensional array
+ * whose dimensions are [Measurement Alias][Measurement:Daily&Weekly][Slot Measurements] .
+ * 
+ * See the controller class for detailed documentation of the array structure.
+ * 
+ * <b>Manipulating the data array</b>
+ * 
+ * The controller stacks the daily and weekly averages on top of each other
+ * in the order in which they are returned by the API calls. The measurement
+ * data is an array of 11 values (the 7 daily averages and the 4 weekly averages).
+ * Assuming today = Day(0), yesterday as Day-1, and so on and similarly for 
+ * weeks: Week(0) the current week and Week(-1) the week before and so on
+ * the measurement data indexes are as follows: 
+ * 
+ * <code>
+ * 	array(
+ * 			[0]=>Day-6,[1]=>Day-5,[2]=>Day-5,[3]=>Day-3,[4]=>Day-2,[5]=>Day-1,[6]=>Day-0,
+ * 			[7]=>Week-3,[8]=>Week-2,[9]=>Week-1,[10]=>Week-0
+ * 		);
+ * </code>
+ * 
+ * The report display columns in descending order, first days and then weeks, as below:
+ * 
+ * 	Day 0, Day-1, Day-2, Day-3, Day-4, Day-5, Day-6, Week 0, Week-1, Week-2, Week-3  
+ *  
+ * 
+ * The view is designed to highlight the values that are below warning / critical thresholds 
+ * as follows:
+ * 
+ * * Performance Times:	15%-25% above 28 days average=>WARN; 25% and above => CRITICAL
+ * * Availability:		based on thresholds set in the application.ini file
+ * * Object Counts:		15%-25% above 28 days average=>WARN; 25% and above => CRITICAL
+ * * Bytes Downloaded:	15%-25% above 28 days average=>WARN; 25% and above => CRITICAL
+ * 
+ * 
+ * @package API-Showcase\View
+ */
+namespace view;
+?>
+<!-- 
+	Display the page header: the vPageComponents value is set by the controller 
+-->
 <h4>Performance - <?php echo $this->vPageCompoments?></h4>
 <p>
+<!-- 
+   Set the labels for the display of performance data. 
+-->
 Average time for full page(s) download.  Data is compared to last 28 days of history
 <span class="label label-warning">15% - 25% above last 28 days</span>
 <span class="label label-important">&gt; 25% above last 28 days</span>
@@ -7,51 +63,105 @@ Average time for full page(s) download.  Data is compared to last 28 days of his
 <table class="table table-condensed table-bordered table-striped">
 <?php
 
+/*
+ * The display index maps the perf_data index to the order
+ * in which the values need to be dispayed.
+ * The sequence 6,5,4,3,2,1,0 corresponds to the 7 daily averages
+ * in descending data order and the sequence 10,9,8,7
+ * are weeks in descending order respectively.
+ */
+$displayIndex = array(6,5,4,3,2,1,0,10,9,8,7);
+
 $warnCellColor = '#f89406; font-weight: bold; color: #FFFFFF';
 $critCellColor = '#953b39; font-weight: bold; color: #FFFFFF';
 
+/*
+ * Construct the header that displays the reported period.
+ * 
+ * The following assumes that a relative report with last seven days of average daily measurements
+ * and last four weeks of average weekly measurements. To handle any arbitrary dates, modify the
+ * controller to extract the date information from the API response from the measurement.bucket_data.name
+ * attribute/element and pass this to the view
+ * 
+ */  
+  
 $displayDate = '<th>Alias</th>';
-for ($i = 7; $i >= 1; $i--) {
+// assuming seven days loop through seven times starting from value of the currentDay
+// varible - note: this is set by the controller
+for ($i = 1; $i <= 7; $i++) {
+	// create a prior date from the current date 
     $date = strtotime(date("Y-m-d", strtotime($this->currentDay)) . " -" . $i ." day");
+    // create a column header by appending a formatted day and short month code value
     $displayDate .= '<th style="text-align:right">' . date('j M', $date) . '</th>';
 }
 
-$displayDate .='<th style="text-align:right">28 Days</th>' . PHP_EOL;
-$displayDate .='<th style="text-align:right">21 Days</th>' . PHP_EOL;
-$displayDate .='<th style="text-align:right">14 Days</th>' . PHP_EOL;
-$displayDate .='<th style="text-align:right">7 Days</th>' . PHP_EOL;
+// Add headers for weekly averages 
+// assuming that currentDay is the 28 March:
+// - Week 1 is 22 Mar - 28 Mar 
+// - Week 2 is 15 Mar - 21 Mar
+// - Week 3 is 08 Mar - 14 Mar
+// - Week 4 is 01 Mar - 07 Mar
 
-echo '<tr>' . PHP_EOL . $displayDate . '</tr>' . PHP_EOL;
+for ($i = 0; $i < 4; $i++) {
+	// week start index 
+	$wkStartIndex = ($i  * 7) + 1;
 
-foreach ($this->perfData as $a => $p) {
-    if (strstr($a, 'Total Time') || strstr($a, 'User Time')) {
-        $avg[] = $p[7]['perf'];
-    }
-    if (strstr($a, 'Object Count')) {
-        $avgObj[] = $p[7]['objects'];
-    }
-    if (strstr($a, 'Average Bytes')) {
-        $avgBytes[] = $p[7]['bytes'];
-    }
+	$weekEnd = strtotime(date("Y-m-d", strtotime($this->currentDay)) . " -" . $wkStartIndex ." day");
+	$weekStart = strtotime(date("Y-m-d", strtotime($this->currentDay)) . " -" . ($wkStartIndex+6) ." day");
+	// create a column header by appending a formatted day and short month code value
+	$displayDate .= '<th style="text-align:right">' . date('j M', $weekStart) . '<br>- ' . date('j M', $weekEnd) . '</th>';
 }
 
-$c = 0;
+// Write the header row for the first measurement
+echo '<tr>' . PHP_EOL . $displayDate . '</tr>' . PHP_EOL;
 
+/*
+ *	Write the Performance Times section using the following logic:
+ *
+ *  1. Loop through the first index of PerfData Array
+ *  
+ *  2. Check for performance time (Total Time / User Time) measurement.
+ *  
+ *  3. Write the Slot Alias value in the slot alias table cell.
+ *  	
+ *  	As the measurement alias value is:
+ *  		{Measurement Alias} => {Slot Alias} - {Page Component}[{Average Method}]
+ *  	We will get the Slot Alias from the measurement alias by removing
+ *  	the Page Component and Average Method names from the measurement alias.
+ *  
+ *  4. Loop through the daily and weekly performance cell values using
+ *  the display index array.
+ *  
+ *  5. Compare values with the 28 day average and set the cell color. 
+ *  
+ */
 foreach ($this->perfData as $a => $p) {
     if (strstr($a, 'Total Time') || strstr($a, 'User Time')) {
+
+		// Get the performance average as set by the controller.
+		// The performance array is also indexed on the alias.
+		$getAvg = $this->perfAverage[$a];
+
+    	// Replace the page component and average method names with nulls
         $a = str_replace(' - Total Time (seconds)[Geo Mean]', '', $a);
         $a = str_replace(' - User Time (seconds)[Geo Mean]', '', $a);
 
         echo '<tr>' . PHP_EOL . '<td>' . $a . '</td>' . PHP_EOL;
-        $getAvg = $avg[$c];
-        $c++;
-        foreach ($p as $pd) {
-            $cellColor = '';
+
+		foreach ($displayIndex as $ix) {
+			// access the performance data in the display index order
+        	$pd = $p[$ix];            
+        	// set the warning / critical colors only if there is a valid value
             if ($pd['perf'] != '-' && $getAvg != '-') {
-                if (($pd['perf'] - $getAvg) / $pd['perf'] * 100 >= 15) {
+				// Compute the variance of this value from the average				
+				$avgVar = (($pd['perf'] - $getAvg) / $getAvg) * 100;
+				
+            	$cellColor = '';
+				// Set the cell colors by comparing to the average
+				if ($avgVar >= 15) {
                     $cellColor = $warnCellColor;
                 }
-                if (($pd['perf'] - $getAvg) / $pd['perf'] * 100 >= 25) {
+                if ($avgVar >= 25) {
                     $cellColor = $critCellColor;
                 }
             }
@@ -72,6 +182,12 @@ Average percentage of successful measurements during the period
 </p>
 <table class="table table-condensed table-bordered table-striped">
 <?php
+/*
+ * This section writes the availability section of the performance data.
+ * It is similar to the performance section except that it uses
+ * the critical / warning levels set by the controller instead of
+ * of average values. 
+ */
 echo $displayDate;
 foreach ($this->perfData as $a => $p) {
     if (strstr($a, 'Total Time') || strstr($a, 'User Time')) {
@@ -79,7 +195,10 @@ foreach ($this->perfData as $a => $p) {
         $a = str_replace(' - User Time (seconds)[Geo Mean]', '', $a);
 
         echo '<tr><td>' . $a . '</td>';
-        foreach ($p as $pd) {
+		foreach ($displayIndex as $ix) {
+        
+			$pd = $p[$ix];
+
             $cellColor = '';
             if ($pd['avail'] < $this->avail_warn && $pd['avail'] != '-') {
                 $cellColor = $warnCellColor;
@@ -104,22 +223,36 @@ Average Objects downloaded.  Data is compared to last 28 days of history
 </p>
 <table class="table table-condensed table-bordered table-striped">
 <?php
+/*
+* This section is similar to the performance section, the
+* average value is read from the performance average array
+* indexed on the alias name. 
+*/
+
 echo $displayDate;
-$c = 0;
 
 foreach ($this->perfData as $a => $p) {
+	// 
     if (strstr($a, 'Object Count')) {
+
+		// get the average from the array 
+        $getAvg = $this->perfAverage[$a];
+
         $a = str_replace(' - Object Count[Geo Mean]', '', $a);
         echo '<tr>' . PHP_EOL . '<td>' . $a . '</td>' . PHP_EOL;
-        $getAvg = $avgObj[$c];
-        $c++;
-        foreach ($p as $pd) {
+		
+        // iterate through each display index
+		foreach ($displayIndex as $ix) {
+			$pd = $p[$ix];
+        
             $cellColor = '';
             if ($pd['objects'] != '-' && $getAvg != '-') {
-                if (($pd['objects'] - $getAvg) / $pd['objects'] * 100 >= 15) {
+				$avgVar = (($pd['objects'] - $getAvg) / $getAvg) * 100;
+				
+                if ($avgVar >= 15) {
                     $cellColor = $warnCellColor;
                 }
-                if (($pd['objects'] - $getAvg) / $pd['objects'] * 100 >= 25) {
+                if ($avgVar >= 25) {
                     $cellColor = $critCellColor;
                 }
             }
@@ -139,23 +272,33 @@ Average bytes downloaded.  Data is compared to last 28 days of history
 </p>
 <table class="table table-condensed table-bordered table-striped">
 <?php
-echo $displayDate;
-$c = 0;
 
+/*
+* This section is similar to the performance section, the
+* average value is read from the performance average array
+* indexed on the alias name. 
+*/
+
+echo $displayDate;
 foreach ($this->perfData as $a => $p) {
     if (strstr($a, 'Average Bytes')) {
+		// get the average from the array
+		$getAvg = $this->perfAverage[$a];
+
         $a = str_replace(' - Average Bytes Downloaded[Geo Mean]', '', $a);
 
         echo '<tr>' . PHP_EOL . '<td>' . $a . '</td>' . PHP_EOL;
-        $getAvg = $avgBytes[$c];
-        $c++;
-        foreach ($p as $pd) {
+
+		foreach ($displayIndex as $ix) {
+			$pd = $p[$ix];
+        
             $cellColor = '';
             if ($pd['bytes'] != '-' && $getAvg != '-') {
-                if (($pd['bytes'] - $getAvg) / $pd['bytes'] * 100 >= 15) {
+				$avgVar = (($pd['bytes'] - $getAvg) / $getAvg) * 100;
+                if ($avgVar >= 15) {
                     $cellColor = $warnCellColor;
                 }
-                if (($pd['bytes'] - $getAvg) / $pd['bytes'] * 100 >= 25) {
+                if ($avgVar >= 25) {
                     $cellColor = $critCellColor;
                 }
             }
