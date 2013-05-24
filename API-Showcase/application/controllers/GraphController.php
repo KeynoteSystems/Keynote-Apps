@@ -37,7 +37,7 @@ class GraphController extends Zend_Controller_Action
 
     public function indexAction()
     {
-        $slotData = $this->_api->getSlotMetaData();
+        $slotData = $this->_api->getActiveSlotMetaData();
 
         $cDate = date('Y-m-d H:i:s');
 
