@@ -18,10 +18,6 @@
     </style>
     <link href="/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
     <link href="/css/datatables.css" rel="stylesheet">
-    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-    <script src="/bootstrap/js/bootstrap.min.js"></script>
-    <script src="//ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
-    <script src="/js/datatables.js"></script>
   </head>
   <body>
     <?php echo $this->render('navbar.phtml') ?>
@@ -39,5 +35,26 @@
       </footer>
 
     </div> <!-- /container -->
+
+    <script src="//code.jquery.com/jquery-latest.min.js"></script>
+    <script src="//ajax.aspnetcdn.com/ajax/jquery.dataTables/1.9.4/jquery.dataTables.min.js"></script>
+    <script src="/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/js/datatables.js"></script>
+    <script>
+    $(document).ready(function() {
+      $('#dashboard').dataTable({
+          "sDom": "<'row'<'span6'l><'span6'f>r>t<'row'<'span6'i><'span6'p>>",
+          "sPaginationType": "bootstrap",
+          "oLanguage": {
+            "sLengthMenu": "_MENU_ records per page"
+          },
+        "sAjaxSource": "/dashboard/tabledata"
+      });
+    });
+
+    $('#dashboard').tooltip({
+        selector: "button[rel=tooltip]"
+    });
+    </script>
   </body>
 </html>
