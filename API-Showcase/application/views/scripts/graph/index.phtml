@@ -1,85 +1,75 @@
 <div class="hero-unit">
   <h1>Graph Creator</h1>
-  <p>Easily generate performance and scatter plot graphs.  Select time period, page component and averaging method.</p>
+  <p>Easily generate performance and scatter plot graphs. Select time period, page component and averaging method.</p>
 </div>
-<?php
-$view = $this->url(array('controller' => 'abc', 'action' => 'generate'));
-$send = $this->url(array('controller' => 'abc', 'action' => 'sendmail'));
-?>
 <form class="form-horizontal" method="post" action="/graph/generate">
-        <div class="control-group">
-            <label class="control-label" for="slotId">Slot ID</label>
-            <div class="controls">
-                <select id="slotId" name="slotId">
-                <?php foreach($this->slotIds as $alias => $sid): ?>
-                    <option value="<?php echo $sid ?>">
-                    <?php echo $alias ?>
-                    </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-        </div>
-
-        <div class="control-group">
-            <label class="control-label" for="averagingMethod">Averaging Method</label>
-            <div class="controls">
-                <label class="radio inline">
-                    <input type="radio" name="avms" id="am" value="GM" checked> Geometric Mean
-                </label>
-                <label class="radio inline">
-                    <input type="radio" name="avms" id="am" value="AM"> Arithmetic Mean
-                </label>
-            </div>
-        </div>
-
-        <div class="control-group">
-            <label class="control-label" for="pageComponent">Page Component</label>
-            <div class="controls">
-                <select id="pageComponent" name="pageComponent">
-                    <option value="U">User Time</option>
-                    <option value="T">Total/Network Time</option>
-                    <option value="Y">Bytes Downloaded</option>
-                    <option value="M">Object Count</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="control-group">
-            <label class="control-label" for="Days">No. of Days</label>
-            <div class="controls">
-            <?php $secondsDay = 86400 ?>
-                <select id="Days" name="Days">
-                    <option value="<?php echo $secondsDay ?>">1 Day</option>
-                    <option value="<?php echo $secondsDay * 2 ?>">2 Day</option>
-                    <option value="<?php echo $secondsDay * 3 ?>">3 Day</option>
-                    <option value="<?php echo $secondsDay * 4 ?>">4 Day</option>
-                    <option value="<?php echo $secondsDay * 5 ?>">5 Day</option>
-                    <option value="<?php echo $secondsDay * 7 ?>">1 Week</option>
-                    <option value="<?php echo $secondsDay * 14 ?>">2 Weeks</option>
-                    <option value="<?php echo $secondsDay * 21 ?>">3 Weeks</option>
-                    <option value="<?php echo $secondsDay * 28 ?>">4 Weeks</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="control-group">
-            <label class="control-label" for="graphType">Graph Type</label>
-            <div class="controls">
-                <select id="graphType" name="graphType">
-                    <option value="time">Performance Trend</option>
-                    <option value="agent">Agent</option>
-                    <option value="backbone">Carrier</option>
-                    <option value="city">City</option>
-                    <option value="country">Country</option>
-                    <option value="region">Region</option>
-                    <option value="scatter">Scatter Plot</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="control-group">
-            <div class="controls">
-                <button type="submit" class="btn btn-info">Create Graph</button>
-            </div>
-        </div>
+  <div class="control-group">
+    <label class="control-label" for="slotId">Slot ID</label>
+    <div class="controls">
+      <select id="slotId" name="slotId">
+      <?php foreach($this->slotIds as $alias => $sid): ?>
+        <option value="<?php echo $sid ?>">
+        <?php echo $alias ?>
+        </option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="averagingMethod">Averaging Method</label>
+    <div class="controls">
+      <label class="radio inline">
+        <input type="radio" name="avms" id="am" value="GM" checked> Geometric Mean
+      </label> <label class="radio inline">
+        <input type="radio" name="avms" id="am" value="AM"> Arithmetic Mean
+      </label>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="pageComponent">Page Component</label>
+    <div class="controls">
+      <select id="pageComponent" name="pageComponent">
+        <option value="U">User Time</option>
+        <option value="T">Total/Network Time</option>
+        <option value="Y">Bytes Downloaded</option>
+        <option value="M">Object Count</option>
+      </select>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="Days">No. of Days</label>
+    <div class="controls">
+    <?php $secondsDay = 86400 ?>
+      <select id="Days" name="Days">
+        <option value="<?php echo $secondsDay ?>">1 Day</option>
+        <option value="<?php echo $secondsDay * 2 ?>">2 Day</option>
+        <option value="<?php echo $secondsDay * 3 ?>">3 Day</option>
+        <option value="<?php echo $secondsDay * 4 ?>">4 Day</option>
+        <option value="<?php echo $secondsDay * 5 ?>">5 Day</option>
+        <option value="<?php echo $secondsDay * 7 ?>">1 Week</option>
+        <option value="<?php echo $secondsDay * 14 ?>">2 Weeks</option>
+        <option value="<?php echo $secondsDay * 21 ?>">3 Weeks</option>
+        <option value="<?php echo $secondsDay * 28 ?>">4 Weeks</option>
+      </select>
+    </div>
+  </div>
+  <div class="control-group">
+    <label class="control-label" for="graphType">Graph Type</label>
+    <div class="controls">
+      <select id="graphType" name="graphType">
+        <option value="time">Performance Trend</option>
+        <option value="agent">Agent</option>
+        <option value="backbone">Carrier</option>
+        <option value="city">City</option>
+        <option value="country">Country</option>
+        <option value="region">Region</option>
+        <option value="scatter">Scatter Plot</option>
+      </select>
+    </div>
+  </div>
+  <div class="control-group">
+    <div class="controls">
+      <button type="submit" class="btn btn-info">Create Graph</button>
+    </div>
+  </div>
 </form>
