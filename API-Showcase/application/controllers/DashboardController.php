@@ -206,87 +206,94 @@ class DashboardController extends Zend_Controller_Action
 
             foreach ($a->measurement as $b) {
 
+                        $icon = ''; $icon1 = '';
                 $t[][] = '<a href="/graph/generate?slotId=' . $b->id. '&graphType=time&Days=86400&pageComponent=U&am=GM">' . $b->alias . '</a>';
 
                 foreach ($b->perf_data as $c) {
                     $warn = $b->threshold_data[0]->value;
                     $crit = $b->threshold_data[1]->value;
-                    $val = (float) $c->value;
+                    if ($c->value != '') {
+                        $val = (float) $c->value;
+                    } else {
+                        $val = '-';
+                    }
 
                     if ($warn == -1.0) $warn = '-';
                     if ($crit == -1.0) $crit = '-';
 
-                    if ($val === '') {
+                    if ($val === '' || $val === '-') {
                         $icon = '';
                     }
 
                     if ($val != '' && $val > 0 && $val < $warn) {
-                        $icon = 'success';
+                        $icon = '-success';
                     }
 
                     if ($val != '' &&  $val >= $warn) {
-                        $icon ='warning';
+                        $icon ='-warning';
                     }
 
-                    if ($val != '' && $val > 0 && $val > $crit) {
-                        $icon ='danger';
+                    if ($val != '-' && $val > 0 && $val > $crit) {
+                        $icon ='-danger';
                     }
 
 
                     if ($val != '' && $val > 0 && $warn == '-' && $crit == '-') {
-                        $icon = 'success';
+                        $icon = '-success';
                     }
 
 
-                    if ($val != '' && $val == 0) {
-                        $icon = 'danger';
+                    if ($val != '-' && $val == 0) {
+                        $icon = '-danger';
                     }
 
                     $tip = "<b>" . $b->alias . "</b>" .
                    "<br/>Performance: <b>" . $val .
-                   " s</b><br/>Warning: <b style='color:orange'>" . $warn .
-                   "</b><br/>Critical: <b style='color:red'>" . $crit . "</b>";
+                   "s</b><br/>Warning: <b style='color:orange'>" . $warn .
+                   "s</b><br/>Critical: <b style='color:red'>" . $crit . "s</b>";
 
-                    array_push ($t[$i],"<button class=\"btn-small btn-block btn-" . $icon . "\" rel='tooltip' data-html='true' title=\"" . $tip . "\" />" . $val . "</button");
+                    array_push ($t[$i],"<button class=\"btn-small btn-block btn" . $icon . "\" rel='tooltip' data-html='true' title=\"" . $tip . "\" />" . $val . "</button");
                 }
 
                 foreach ($b->avail_data as $e) {
                     $warn = $b->threshold_data[2]->value;
                     $crit = $b->threshold_data[3]->value;
-                    $val = (float) $e->value;
+                    if ($e->value != '-' && $e->value != '0') {
+                        $val1 = (float) $e->value;
+                    } else {
+                        $val1 = $e->value;
+                    }
+
                     if ($warn == -1.0) $warn = '-';
                     if ($crit == -1.0) $crit = '-';
 
-                    if ($val === '-') {
+                    if ($val1 == '-' && $val1 != 0) {
                         $icon1 = '';
                     }
 
-                    if ($val != '-' && $val == 100) {
-                        $icon1 = 'success';
+                    if ($val1 != '-' && $val1 === 100) {
+                        $icon1 = '-success';
                     }
 
-                    if ($val != '-' && $val > $warn) {
-                        $icon1 = 'success';
+                    if ($val1 != '-' && $val1 > $warn) {
+                        $icon1 = '-success';
                     }
 
-                    if ($val != '-' && $val <= $warn && $val > 0) {
-                        $icon1 ='warning';
+                    if ($val1 != '-' && $val1 <= $warn && $val1 > 0) {
+                        $icon1 ='-warning';
                     }
 
-                    if ($val != '-' && $val == 0 && $warn == '-' && $crit == '-') {
-                        $icon1 = 'danger';
+                    if ($val1 == '0') {
+                        $icon1 = '-danger';
                     }
 
-                    if ($val != '-' && $val == 0) {
-                        $icon1 = 'danger';
+                    if ($val1 != '-' && $val1 <= $crit && $val > 0) {
+                        $icon1 = '-danger';
                     }
-
-
-                    if ($val != '-' && $val <= $crit && $val > 0) {
-                        $icon1 = 'danger';
-                    }
-                    $tip2 = "<b>" . $b->alias . "</b><br/>Availability: <b>" . $val . "%</b>";
-                    array_push($t[$i], "<button class=\"btn-small btn-block btn-" . $icon1 . "\" rel='tooltip' data-html='true' title=\"" . $tip2 . "\" />" . $val . "</button>");
+                    $tip2 = "<b>" . $b->alias . "</b><br/>Availability: <b>" . $val1 . "%</b>" .
+                    "<br/>Warning: <b style='color:orange'>" . $warn .
+                    "%</b><br/>Critical: <b style='color:red'>" . $crit . "%</b>";
+                    array_push($t[$i], "<button class=\"btn-small btn-block btn" . $icon1 . "\" rel='tooltip' data-html='true' title=\"" . $tip2 . "\" />" . $val1 . "</button>");
 
 
                 }
