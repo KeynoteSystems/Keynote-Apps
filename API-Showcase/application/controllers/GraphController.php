@@ -22,7 +22,7 @@ class GraphController extends Zend_Controller_Action
 
     public function init()
     {
-        $this_config = Zend_Registry::get('config');
+        $this->_config = Zend_Registry::get('config');
 
         $this->_session = new Zend_Session_Namespace('DASHBOARD');
 
@@ -39,15 +39,10 @@ class GraphController extends Zend_Controller_Action
     {
         $slotData = $this->_api->getActiveSlotMetaData();
 
-        $cDate = date('Y-m-d H:i:s');
-
         foreach ($slotData->product as $a) {
             foreach ($a->slot as $b) {
-                $endDate = $b->end_date;
-                if ($endDate > $cDate) {
                     $slotIds[$b->slot_alias] = $b->slot_id;
                 }
-            }
         }
 
         $this->view->slotIds = $slotIds;
@@ -57,10 +52,12 @@ class GraphController extends Zend_Controller_Action
     {
         if ($this->_request->getParam('graphType') == 'scatter') {
             $nDays = 3600;
-            $bSize = 300;
+            $bSize = 60;
+            $basePageOnly = 'true';
         } else {
             $nDays = $this->_request->getParam('Days');
             $bSize = 3600;
+            $basePageOnly = 'false';
         }
 
         $this->view->currentDate = date('Y-m-d');
@@ -69,7 +66,7 @@ class GraphController extends Zend_Controller_Action
 
         $this->view->graphType = ucfirst($this->_request->getParam('graphType'));
 
-        $graphData = $this->_api->getGraphData(array($this->_request->getParam('slotId')), $this->_request->getParam('graphType'), $this->_config['graph']['timezone'], 'relative', $nDays, $bSize, $this->_request->getParam('pageComponent'), $this->_request->getParam('am'), array($this->_request->getParam('slotId')));
+        $graphData = $this->_api->getGraphData(array($this->_request->getParam('slotId')), $this->_request->getParam('graphType'), $this->_config['graph']['timezone'], 'relative', $nDays, $bSize, $this->_request->getParam('pageComponent'), $this->_request->getParam('am'));
 
         switch ($this->_request->getParam('pageComponent')) {
         	case 'U':
