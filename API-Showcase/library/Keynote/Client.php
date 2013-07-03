@@ -46,7 +46,7 @@ class Keynote_Client
 	 * Keynote API Base URL.
 	 * @var string
 	 */
-	private $api_url = 'https://api.keynote.com/keynote/api/';
+	private $api_url = 'http://api.keynote.com/keynote/api/';
 
 	/**
 	 * The Keynote API Key to be used to access the API - client classes / programs must set this to
