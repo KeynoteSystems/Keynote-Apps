@@ -71,7 +71,7 @@ class GraphController extends Zend_Controller_Action
         switch ($this->_request->getParam('pageComponent')) {
         	case 'U':
         		$this->view->pageComponent = 'User Time (seconds)';
-        		$sp = "delta__user_msec";
+        		$sp = "delta__user__msec";
         		$this->view->gUnit = 's';
         		$divideby = 1000;
         		break;
