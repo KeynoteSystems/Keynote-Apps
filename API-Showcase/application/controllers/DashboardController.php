@@ -196,7 +196,6 @@ class DashboardController extends Zend_Controller_Action
             $api->api_key = $config->general->apiKey;
         }
 
-        $api->format = 'json';
         $data = $api->getDashboardData();
 
         $i = 0;
