@@ -52,7 +52,7 @@ class GraphController extends Zend_Controller_Action
     {
         if ($this->_request->getParam('graphType') == 'scatter') {
             $nDays = 3600;
-            $bSize = 60;
+            $bSize = 300;
             $basePageOnly = 'true';
         } else {
             $nDays = $this->_request->getParam('Days');
@@ -73,24 +73,28 @@ class GraphController extends Zend_Controller_Action
         		$this->view->pageComponent = 'User Time (seconds)';
         		$sp = "delta__user_msec";
         		$this->view->gUnit = 's';
+        		$divideby = 1000;
         		break;
 
         	case 'T':
         		$this->view->pageComponent = 'Total Time (seconds)';
         		$sp= "delta__msec";
         		$this->view->gUnit = 's';
+        		$divideby = 1000;
         		break;
 
         	case 'Y':
         		$this->view->pageComponent = 'Bytes Downloaded (Kb)';
         		$sp = "resp__bytes";
         		$this->view->gUnit = 'Kb';
+        		$divideby = 1024;
         		break;
 
         	case 'M':
         		$this->view->pageComponent = 'Object Count';
         		$sp = "element__count";
         		$this->view->gUnit = null;
+        		$divideby = 1;
         		break;
         }
 
@@ -104,7 +108,24 @@ class GraphController extends Zend_Controller_Action
                     foreach ($datapoint->children() as $dp) {
                         $t = date('d/m H:i:s', strtotime($dp->datetime));
                         $time[] = $t;
-                        $perfData[] = array($t, (string)$dp->txn__summary->$sp / 1000);
+                        switch ($dp->txn__error->code) {
+                        	case '12002':
+                        		$fillColor = '#FF0000';
+                        		$symbol = 'triangle';
+                        		$radius = '5';
+                        		break;
+                        	default:
+                        		$fillColor = '#006600';
+                        		$symbol = 'circle';
+                        		$radius = '2';
+                        }
+
+                        if ($dp->txn__summary->content__errors == 1 && !$dp->txn__error->code) {
+                        	$fillColor = '#FFDF00';
+                        	$symbol = 'circle';
+                        	$radius = '7';
+                        }
+                        $perfData[] = array('y' => (string)$dp->txn__summary->$sp / $divideby, 'marker' => array('radius' => $radius, 'symbol' => $symbol, 'fillColor' => $fillColor));
                     }
                 }
                 break;
