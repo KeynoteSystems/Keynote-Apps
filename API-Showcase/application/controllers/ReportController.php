@@ -6,17 +6,10 @@ class ReportController extends Zend_Controller_Action
 	 *
 	 * @var array
 	 */
-	private $_session;
-
-	public function init()
-	{
-
-	}
+	private $_session = array();
 
 	public function indexAction()
 	{
-		$config = Zend_Registry::get('config');
-
 		$this->_session = new Zend_Session_Namespace('DASHBOARD');
 
 		$url = Zend_Controller_Front::getInstance()->getRequest()->getRequestUri();
@@ -34,7 +27,5 @@ class ReportController extends Zend_Controller_Action
 		$this->view->data = $api->getActiveSlotMetaData();
 
 		$this->view->alarm = $api->getAlarmMetaData();
-
-		$this->view->cDate = date('Y-m-d H:i:s');
 	}
 }
