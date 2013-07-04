@@ -4,13 +4,11 @@
 </div>
 <form class="form-horizontal" method="post" action="/graph/generate">
   <div class="control-group">
-    <label class="control-label" for="slotId">Slot ID</label>
-    <div class="controls">
-      <select id="slotId" name="slotId">
+    <label class="control-label" for="slotId">Slot Alias</label>
+    <div class="controls slotId">
+      <select id="slotId" name="slotId" class="combobox">
       <?php foreach($this->slotIds as $alias => $sid): ?>
-        <option value="<?php echo $sid ?>">
-        <?php echo $alias ?>
-        </option>
+        <option value="<?php echo $sid ?>"><?php echo $alias ?></option>
         <?php endforeach; ?>
       </select>
     </div>
@@ -29,14 +27,28 @@
     <label class="control-label" for="pageComponent">Page Component</label>
     <div class="controls">
       <select id="pageComponent" name="pageComponent">
-        <option value="U">User Time</option>
-        <option value="T">Total/Network Time</option>
-        <option value="Y">Bytes Downloaded</option>
-        <option value="M">Object Count</option>
+        <option value="T" class="T">Total/Network Time</option>
+        <option value="U" class="U">User Time</option>
+        <option value="Y" class="Y">Bytes Downloaded</option>
+        <option value="M" class="M">Object Count</option>
       </select>
     </div>
   </div>
   <div class="control-group">
+    <label class="control-label" for="graphType">Graph Type</label>
+    <div class="controls graphType">
+      <select id="graphType" name="graphType">
+        <option value="time">Performance Trend</option>
+        <option value="agent">Agent</option>
+        <option value="backbone">Carrier</option>
+        <option value="city">City</option>
+        <option value="country">Country</option>
+        <option value="region">Region</option>
+        <option value="scatter">Scatter Plot</option>
+      </select>
+    </div>
+  </div>
+  <div class="control-group days">
     <label class="control-label" for="Days">No. of Days</label>
     <div class="controls">
     <?php $secondsDay = 86400 ?>
@@ -54,22 +66,34 @@
     </div>
   </div>
   <div class="control-group">
-    <label class="control-label" for="graphType">Graph Type</label>
-    <div class="controls">
-      <select id="graphType" name="graphType">
-        <option value="time">Performance Trend</option>
-        <option value="agent">Agent</option>
-        <option value="backbone">Carrier</option>
-        <option value="city">City</option>
-        <option value="country">Country</option>
-        <option value="region">Region</option>
-        <option value="scatter">Scatter Plot</option>
-      </select>
-    </div>
-  </div>
-  <div class="control-group">
     <div class="controls">
       <button type="submit" class="btn btn-info">Create Graph</button>
     </div>
   </div>
 </form>
+<script type="text/javascript">
+$(document).ready(function(){
+  $('.combobox').combobox();
+
+  $('.graphType select').change(function() {
+    var selectedVal = $(":selected", this).val();
+    if (selectedVal == 'scatter') {
+        $('.days').hide();
+    } else {
+        $('.days').show();
+    }
+  });
+
+  $('.slotId select').change(function() {
+    var selectedSlot = $(":selected", this).text();
+    console.log(selectedSlot.search("ApP"));
+    if(selectedSlot.search("ApP") == -1) {
+        console.log('ApP not selected');
+        $('.U').show();
+    } else {
+        console.log('ApP selected!');
+    	$('.U').hide();
+    }
+  });
+});
+</script>
