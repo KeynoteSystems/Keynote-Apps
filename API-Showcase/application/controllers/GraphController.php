@@ -1,188 +1,209 @@
 <?php
 class GraphController extends Zend_Controller_Action
 {
-    /**
-     * Session
-     *
-     * @var array
-     */
-    private $_session = array();
+	/**
+	 * Session
+	 *
+	 * @var array
+	 */
+	private $_session = array();
 
-    /**
-     * API
-     *
-     */
-    private $_api;
+	/**
+	 * API
+	 *
+	 */
+	private $_api;
 
-    /**
-     * Config
-     *
-     */
-    private $_config;
+	/**
+	 * Config
+	 *
+	 */
+	private $_config;
 
-    public function init()
-    {
-        $this->_config = Zend_Registry::get('config');
+	public function init()
+	{
+		$this->_config = Zend_Registry::get('config');
 
-        $this->_session = new Zend_Session_Namespace('DASHBOARD');
+		$this->_session = new Zend_Session_Namespace('DASHBOARD');
 
-        $this->_api = new Keynote_Client();
+		$this->_api = new Keynote_Client();
 
-        if ($this->_session->apiKey) {
-            $this->_api->api_key = $this->_session->apiKey;
-        } else {
-            $this->_redirect('index');
-        }
-    }
+		if ($this->_session->apiKey) {
+			$this->_api->api_key = $this->_session->apiKey;
+		} else {
+			$this->_redirect('index');
+		}
+	}
 
-    public function indexAction()
-    {
-        $slotData = $this->_api->getActiveSlotMetaData();
+	public function indexAction()
+	{
+		$url = Zend_Controller_Front::getInstance()->getRequest()->getRequestUri();
 
-        foreach ($slotData->product as $a) {
-            foreach ($a->slot as $b) {
-                    $slotIds[$b->slot_alias] = $b->slot_id;
-                }
-        }
+		$this->_session->url = $url;
 
-        $this->view->slotIds = $slotIds;
-    }
+		$slotData = $this->_api->getActiveSlotMetaData();
 
-    public function generateAction()
-    {
-        if ($this->_request->getParam('graphType') == 'scatter') {
-            $nDays = 3600;
-            $bSize = 300;
-            $basePageOnly = 'true';
-        } else {
-            $nDays = $this->_request->getParam('Days');
-            $bSize = 3600;
-            $basePageOnly = 'false';
-        }
+		foreach ($slotData->product as $a) {
+			foreach ($a->slot as $b) {
+				$slotIds[$b->slot_alias] = $b->slot_id;
+			}
+		}
 
-        $this->view->currentDate = date('Y-m-d');
+		$this->view->slotIds = $slotIds;
+	}
 
-        $this->_api->format = 'xml';
+	public function generateAction()
+	{
+		if ($this->_request->getParam('graphType') == 'scatter') {
+			$nDays = 3600;
+			$bSize = 300;
+			$basePageOnly = 'true';
+		} else {
+			$nDays = $this->_request->getParam('Days');
+			$bSize = 3600;
+			$basePageOnly = 'false';
+		}
 
-        $this->view->graphType = ucfirst($this->_request->getParam('graphType'));
+		$this->view->currentDate = date('Y-m-d');
 
-        $graphData = $this->_api->getGraphData(array($this->_request->getParam('slotId')), $this->_request->getParam('graphType'), $this->_config['graph']['timezone'], 'relative', $nDays, $bSize, $this->_request->getParam('pageComponent'), $this->_request->getParam('am'));
+		$this->_api->format = 'xml';
 
-        switch ($this->_request->getParam('pageComponent')) {
-        	case 'U':
-        		$this->view->pageComponent = 'User Time (seconds)';
-        		$sp = "delta__user__msec";
-        		$this->view->gUnit = 's';
-        		$divideby = 1000;
-        		break;
+		$this->view->graphType = ucfirst($this->_request->getParam('graphType'));
 
-        	case 'T':
-        		$this->view->pageComponent = 'Total Time (seconds)';
-        		$sp= "delta__msec";
-        		$this->view->gUnit = 's';
-        		$divideby = 1000;
-        		break;
+		$graphData = $this->_api->getGraphData(array($this->_request->getParam('slotId')), $this->_request->getParam('graphType'), $this->_config['graph']['timezone'], 'relative', $nDays, $bSize, $this->_request->getParam('pageComponent'), $this->_request->getParam('am'));
 
-        	case 'Y':
-        		$this->view->pageComponent = 'Bytes Downloaded (Kb)';
-        		$sp = "resp__bytes";
-        		$this->view->gUnit = 'Kb';
-        		$divideby = 1024;
-        		break;
+		switch ($this->_request->getParam('pageComponent')) {
+			case 'U':
+				$this->view->pageComponent = 'User Time (seconds)';
+				$sp = "delta__user__msec";
+				$this->view->gUnit = 's';
+				$spdivideby = 1000;
+				break;
 
-        	case 'M':
-        		$this->view->pageComponent = 'Object Count';
-        		$sp = "element__count";
-        		$this->view->gUnit = null;
-        		$divideby = 1;
-        		break;
-        }
+			case 'T':
+				$this->view->pageComponent = 'Total Time (seconds)';
+				$sp= "delta__msec";
+				$this->view->gUnit = 's';
+				$spdivideby = 1000;
+				break;
 
-        switch ($this->view->graphType) {
-            case 'Scatter':
-                $this->view->hcGraphType = 'scatter';
-                $this->view->step = 8;
-                $this->view->y = 15;
-                $this->view->title = 'Scatter Plot';
-                foreach ($graphData->list as $datapoint) {
-                    foreach ($datapoint->children() as $dp) {
-                        $t = date('d/m H:i:s', strtotime($dp->datetime));
-                        $time[] = $t;
-                        switch ($dp->txn__error->code) {
-                        	case '12002':
-                        		$fillColor = '#FF0000';
-                        		$symbol = 'triangle';
-                        		$radius = '5';
-                        		break;
-                        	default:
-                        		$fillColor = '#006600';
-                        		$symbol = 'circle';
-                        		$radius = '2';
-                        }
+			case 'Y':
+				$this->view->pageComponent = 'Bytes Downloaded (Mb)';
+				$sp = "resp__bytes";
+				$this->view->gUnit = 'Mb';
+				$divideby = 1024000;
+				$spdivideby = 1024000;
+				break;
 
-                        if ($dp->txn__summary->content__errors == 1 && !$dp->txn__error->code) {
-                        	$fillColor = '#FFDF00';
-                        	$symbol = 'circle';
-                        	$radius = '7';
-                        }
-                        $perfData[] = array('y' => (string)$dp->txn__summary->$sp / $divideby, 'marker' => array('radius' => $radius, 'symbol' => $symbol, 'fillColor' => $fillColor));
-                    }
-                }
-                break;
+			case 'M':
+				$this->view->pageComponent = 'Object Count';
+				$sp = "element__count";
+				$this->view->gUnit = null;
+				break;
+		}
 
-            case 'Time':
-                $this->view->hcGraphType = 'area';
-                $this->view->step = (3 * $nDays) / 86400;
-                $this->view->y = 15;
-                $this->view->title = $graphData->measurement->alias;
-                foreach ($graphData->measurement->bucket_data as $datapoint) {
-                    foreach ($datapoint as $dp) {
-                        $t = date('d/m H:i:s', strtotime($dp['name']));
-                        $time[] = $t;
-                        if ($dp->perf_data['value'] == '-') {
-                            $perfDataValue = 0;
-                        } else {
-                            $perfDataValue = $dp->perf_data['value'];
-                        }
-                        $perfData[] = array($t, (string)$perfDataValue);
+		switch ($this->view->graphType) {
+			case 'Scatter':
+				$this->view->hcGraphType = 'scatter';
+				$this->view->step = 8;
+				$this->view->y = 15;
+				$this->view->title = 'Scatter Plot';
+				foreach ($graphData->list as $datapoint) {
+					foreach ($datapoint->children() as $dp) {
+						$t = date('d/m H:i:s', strtotime($dp->datetime));
+						$time[] = $t;
+						switch ($dp->txn__error->code) {
+							case '12002':
+							case '-99200':
+								$fillColor = '#FF0000';
+								$symbol = 'triangle';
+								$radius = '5';
+								break;
+							default:
+								$fillColor = '#006600';
+								$symbol = 'circle';
+								$radius = '2';
+						}
 
-                        if ($dp->avail_data['value'] == '-') {
-                            $availDataValue = 0;
-                        } else {
-                            $availDataValue = $dp->avail_data['value'];
-                        }
-                        $availData[] = array($t, (string)$availDataValue);
-                    }
-                }
-                break;
+						if ($dp->txn__summary->content__errors == 1 && !$dp->txn__error->code) {
+							$fillColor = '#FFDF00';
+							$symbol = 'circle';
+							$radius = '7';
+						}
 
-            case 'Agent':
-            case 'Backbone':
-            case 'City':
-            case 'Country':
-            case 'Region':
-                $this->view->hcGraphType = 'bar';
-                $this->view->step = 0;
-                $this->view->y = 0;
-                $this->view->title = $graphData->measurement->alias;
-                foreach ($graphData->measurement->bucket_data as $datapoint) {
-                    foreach ($datapoint as $dp) {
-                        $t = (string)$dp['name'];
-                        $time[] = $t;
-                        $perfData[] = array($t, (string)$dp->perf_data['value']);
-                        $availData[] = array($t, (string)$dp->avail_data['value']);
+						$dataValue = $dp->txn__summary->$sp;
+						if (isset($spdivideby)) {
+							$dataValue = $dataValue / $spdivideby;
+						}
+						$perfData[] = array('y' => (string)$dataValue, 'marker' => array('radius' => $radius, 'symbol' => $symbol, 'fillColor' => $fillColor));
+					}
+				}
+				break;
 
-                    }
-                    break;
-                }
-        }
+			case 'Time':
+				$this->view->hcGraphType = 'area';
+				$this->view->step = (3 * $nDays) / 86400;
+				$this->view->y = 15;
+				$this->view->title = $graphData->measurement->alias;
+				foreach ($graphData->measurement->bucket_data as $datapoint) {
+					foreach ($datapoint as $dp) {
+						$t = date('d/m H:i:s', strtotime($dp['name']));
+						$time[] = $t;
+						if ($dp->perf_data['value'] == '-') {
+							$perfDataValue = 0;
+						} else {
+							$perfDataValue = (float)$dp->perf_data['value'];
+						}
+						if (isset($divideby)) {
+							$perfDataValue = $perfDataValue / $divideby;
+						}
+						$perfData[] = array($t, (string)number_format($perfDataValue,2));
 
-        $this->view->xTime = json_encode($time);
-        $this->view->perfDataPoints = json_encode($perfData, JSON_NUMERIC_CHECK);
+						if ($dp->avail_data['value'] == '-') {
+							$availDataValue = 0;
+						} else {
+							$availDataValue = $dp->avail_data['value'];
+						}
+						$availData[] = array($t, (string)$availDataValue);
+					}
+				}
+				break;
 
-        if ($this->view->graphType != 'Scatter') {
-            $this->view->availDataPoints = json_encode($availData, JSON_NUMERIC_CHECK);
-        }
-    }
+			case 'Agent':
+			case 'Backbone':
+			case 'City':
+			case 'Country':
+			case 'Region':
+				$this->view->hcGraphType = 'bar';
+				$this->view->step = 0;
+				$this->view->y = 0;
+				$this->view->title = $graphData->measurement->alias;
+				foreach ($graphData->measurement->bucket_data as $datapoint) {
+					foreach ($datapoint as $dp) {
+						$t = (string)$dp['name'];
+						$time[] = $t;
+												if ($dp->perf_data['value'] == '-') {
+							$perfDataValue = 0;
+						} else {
+							$perfDataValue = (float)$dp->perf_data['value'];
+						}
+						if (isset($divideby)) {
+							$perfDataValue = $perfDataValue / $divideby;
+						}
+						$perfData[] = array($t, (string)number_format($perfDataValue,2));
+						$availData[] = array($t, (string)$dp->avail_data['value']);
+
+					}
+					break;
+				}
+		}
+
+		$this->view->xTime = json_encode($time);
+		$this->view->perfDataPoints = json_encode($perfData, JSON_NUMERIC_CHECK);
+
+		if ($this->view->graphType != 'Scatter') {
+			$this->view->availDataPoints = json_encode($availData, JSON_NUMERIC_CHECK);
+		}
+	}
 
 }
