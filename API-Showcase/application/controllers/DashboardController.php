@@ -203,10 +203,23 @@ class DashboardController extends Zend_Controller_Action
 
         foreach ($data->product as $a) {
 
-            foreach ($a->measurement as $b) {
 
-                        $icon = ''; $icon1 = '';
+            foreach ($a->measurement as $b) {
+                $icon = '';
+                $icon1 = '';
                 $t[][] = '<a href="/graph/generate?slotId=' . $b->id. '&graphType=time&Days=86400&pageComponent=U&am=GM">' . $b->alias . '</a>';
+
+                $dataArray[] = array(
+                '<a href="/graph/generate?slotId=' . $b->id. '&graphType=time&Days=86400&pageComponent=U&am=GM">' . $b->alias . '</a>',
+                $b->perf_data[0]->value,
+                $b->perf_data[1]->value,
+                $b->perf_data[2]->value,
+                $b->perf_data[3]->value,
+                $b->avail_data[0]->value,
+                $b->avail_data[1]->value,
+                $b->avail_data[2]->value,
+                $b->avail_data[3]->value
+                );
 
                 foreach ($b->perf_data as $c) {
                     $warn = $b->threshold_data[0]->value;
@@ -300,7 +313,8 @@ class DashboardController extends Zend_Controller_Action
             }
         }
 
-        $v = array("iTotalRecords" => $i, "iTotalDisplayRecords" => $i, "aaData" => $t);
+                        //print_r ($dataArray);
+        $v = array("iTotalRecords" => $i, "iTotalDisplayRecords" => $i, "aaData" => $dataArray);
         echo json_encode($v);
     }
 }
