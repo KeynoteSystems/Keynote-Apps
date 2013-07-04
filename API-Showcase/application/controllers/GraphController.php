@@ -45,7 +45,9 @@ class GraphController extends Zend_Controller_Action
 
 		foreach ($slotData->product as $a) {
 			foreach ($a->slot as $b) {
+				if ($b->slot_id != 1091870 && $b->slot_id != 508374) {
 				$slotIds[$b->slot_alias] = $b->slot_id;
+				}
 			}
 		}
 
