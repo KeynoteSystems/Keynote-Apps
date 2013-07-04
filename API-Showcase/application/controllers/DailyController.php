@@ -503,6 +503,10 @@ class DailyController extends Zend_Controller_Action
 				$pageComponents = 'T,Y,M';
 				$this->view->vPageCompoments = 'Total Time';
 				break;
+			case 'MWP':
+				$pageComponents = 'T';
+				$this->view->vPageCompoments = 'Total Time';
+				break;
 		}
 
 		$this->view->currentDay = date('Y-m-d');  // set the View objects currentDay
