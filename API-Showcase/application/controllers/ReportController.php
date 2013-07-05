@@ -24,7 +24,7 @@ class ReportController extends Zend_Controller_Action
 			$this->_redirect('index');
 		}
 
-		$this->view->data = $api->getActiveSlotMetaData();
+		$this->view->data = $this->_session->slotData;
 
 		$this->view->alarm = $api->getAlarmMetaData();
 	}
