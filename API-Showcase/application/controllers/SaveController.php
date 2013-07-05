@@ -37,6 +37,7 @@ class SaveController extends Zend_Controller_Action
 		$cache->clean(Zend_Cache::CLEANING_MODE_ALL);
 
 		//$this->_redirect($this->_session->url);
+		$this->_redirect('/');
 	}
 
 }
