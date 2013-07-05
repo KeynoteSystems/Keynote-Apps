@@ -429,12 +429,16 @@ class DailyController extends Zend_Controller_Action
 		 * Load previously retrieved slotmetadata from the cache, if the cache is empty
 		 * (never set or timed out) then fetch the data by invoking the API and cache the result.
 		 */
+		/*
 		if (($slotData = $this->_cache->load('slotData_' . Zend_Session::getId())) === false ) {
 
 			$slotData = $api->getActiveSlotMetaData();
 
 			$this->_cache->save($slotData, 'slotData_' . Zend_Session::getId());
 		}
+		*/
+
+		$slotData = $this->_session->slotData;
 
 		/**
 		 *  Get the value of the 'product' parameter from the Http request object
@@ -797,8 +801,8 @@ class DailyController extends Zend_Controller_Action
 	public function indexAction()
 	{
 
-		$url = Zend_Controller_Front::getInstance()->getRequest()->getRequestUri();
+		//$url = Zend_Controller_Front::getInstance()->getRequest()->getRequestUri();
 
-		$this->_session->url = $url;
+		//$this->_session->url = $url;
 	}
 }
