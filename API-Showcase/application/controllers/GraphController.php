@@ -115,6 +115,7 @@ class GraphController extends Zend_Controller_Action
 						switch ($dp->txn__error->code) {
 							case '12002':
 							case '-99200':
+							case '-99100':
 								$fillColor = '#FF0000';
 								$symbol = 'triangle';
 								$radius = '5';
