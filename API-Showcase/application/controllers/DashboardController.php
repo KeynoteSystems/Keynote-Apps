@@ -18,6 +18,8 @@ class DashboardController extends Zend_Controller_Action
 
 	private $availArray;
 
+	private $_api;
+
 	public function init()
 	{
 		$this->_config = Zend_Registry::get('config');
@@ -26,18 +28,25 @@ class DashboardController extends Zend_Controller_Action
 
 		$this->_helper->layout()->setLayout('dashboard');
 
-		$api = new Keynote_Client();
+		$this->_api = new Keynote_Client();
 
 		if ($this->_session->apiKey) {
-			$api->api_key = $this->_session->apiKey;
+			$this->_api->api_key = $this->_session->apiKey;
 		} else {
 			$this->_redirect('index');
-			$api->api_key = $this->_config['apikey'];
+			$this->_api->api_key = $this->_config['apikey'];
 		}
 
-		$api->format = 'json';
+	}
 
-		$dashboardData = $api->getDashboardData();
+	public function indexAction()
+	{
+		$url = Zend_Controller_Front::getInstance()->getRequest()->getRequestUri();
+
+		$this->_session->url = $url;
+
+		/*
+		$dashboardData = $this->_api->getDashboardData();
 
 		$slots = array();
 
@@ -74,14 +83,7 @@ class DashboardController extends Zend_Controller_Action
 
 			}
 		}
-
-	}
-
-	public function indexAction()
-	{
-		$url = Zend_Controller_Front::getInstance()->getRequest()->getRequestUri();
-
-		$this->_session->url = $url;
+		*/
 	}
 
 	public function graphAction()
@@ -92,15 +94,28 @@ class DashboardController extends Zend_Controller_Action
 
 		$this->_helper->viewRenderer->setNoRender();
 
-		$api = new Keynote_Client();
+		$dashboardData = $this->_api->getDashboardData();
 
-		if ($this->_session->apiKey) {
-			$api->api_key = $this->_session->apiKey;
-		} else {
-			$api->api_key = $config->general->apiKey;
+		$slots = array();
+
+		foreach ($dashboardData->product as $p) {
+
+			foreach ($p->measurement as $m) {
+				$slots[] = $m->id;
+			}
 		}
 
-		$api->format = 'json';
+		$this->dashboard = $dashboardData;
+
+		$this->view->dashboard = $dashboardData;
+
+		$this->view->slots = $slots;
+		$this->slotCount = $slots;
+
+		$getSlots = count($this->slotCount);
+		$this->slotId = $this->slotCount[rand(0,$getSlots-1)];
+
+		$this->view->slotId = $this->slotId;
 
 		if (!$this->_getParam('slotid')) {
 			$getSlots = count($this->slotCount);
@@ -109,7 +124,7 @@ class DashboardController extends Zend_Controller_Action
 			$slotId = $this->_getParam('slotid');
 		}
 
-		$graph = $api->getGraphData(array($slotId), "time", $this->_config['graph']['timezone'], "relative", 43200, 3600, null, 'GM', array($slotId));
+		$graph = $this->_api->getGraphData(array($slotId), "time", $this->_config['graph']['timezone'], "relative", 43200, 3600, null, 'GM', array($slotId));
 
 		foreach ($graph->measurement as $slot) {
 			$a = $slot->alias;
@@ -128,6 +143,44 @@ class DashboardController extends Zend_Controller_Action
 		header('Content-type: application/json');
 		$this->_helper->layout->disableLayout();
 		$this->_helper->viewRenderer->setNoRender();
+
+		$dashboardData = $this->_api->getDashboardData();
+
+		$slots = array();
+
+		foreach ($dashboardData->product as $p) {
+
+			foreach ($p->measurement as $m) {
+				$slots[] = $m->id;
+			}
+		}
+
+		$this->dashboard = $dashboardData;
+
+		$this->view->dashboard = $dashboardData;
+
+
+		$this->view->slots = $slots;
+		$this->slotCount = $slots;
+
+		$getSlots = count($this->slotCount);
+		$this->slotId = $this->slotCount[rand(0,$getSlots-1)];
+
+		$this->view->slotId = $this->slotId;
+
+		foreach ($this->dashboard->product as $p) {
+
+			foreach ($p->measurement as $m) {
+				if ($m->perf_data[0]->value != 0) {
+					$this->perfArray[$m->alias] = array('five' => $m->perf_data[0]->value, 'fifteen' => $m->perf_data[1]->value, 'slotId' => $m->id);
+				}
+
+				if ($m->avail_data[3]->value != 0) {
+					$this->availArray[$m->alias] = array('day' => $m->avail_data[3]->value, 'fifteen' => $m->avail_data[1]->value, 'slotid' => $m->id);
+				}
+
+			}
+		}
 
 		switch ($this->_getParam('type')) {
 
@@ -181,22 +234,21 @@ class DashboardController extends Zend_Controller_Action
 	public function tableAction()
 	{
 		$this->_helper->layout()->setLayout('table');
+
+		$url = Zend_Controller_Front::getInstance()->getRequest()->getRequestUri();
+
+		$this->_session->url = $url;
 	}
 
 	public function tabledataAction()
 	{
 		header('Content-type: application/json');
+
 		$this->_helper->layout->disableLayout();
+
 		$this->_helper->viewRenderer->setNoRender();
-		$api = new Keynote_Client();
 
-		if ($this->_session->apiKey) {
-			$api->api_key = $this->_session->apiKey;
-		} else {
-			$api->api_key = $config->general->apiKey;
-		}
-
-		$data = $api->getDashboardData();
+		$data = $this->_api->getDashboardData();
 
 		$i = 0;
 
@@ -224,31 +276,41 @@ class DashboardController extends Zend_Controller_Action
 	}
 
 	private function parsePerfData($alias, $data, $warn, $crit) {
-			switch ($data) {
+		switch ($data) {
 			case '-':
 			case '':
 				$css = '';
 				$data = '-';
+				$dataType = '';
 				break;
 			case ($data > 0 && $data < $warn):
 				$css = '-success';
+				$dataType = 's';
 				break;
 			case ($data >= $warn && $data > 0 && !($data >= $crit)):
 				$css = '-warning';
+				$dataType = 's';
 				break;
 			case 0:
 			case ($data >= $crit && $data > 0):
 				$css = '-danger';
+				$dataType = 's';
 				break;
 			default:
 				$css = '';
+				$dataType = 's';
 		}
 
-        $perfTip = "Performance: <b>" . $data . "s</b>" .
+		if ($warn == -0.0010) {
+			$css = '';
+			$perfTip = '<b>No thresholds set!</b>';
+		} else {
+			$perfTip = "Performance: <b>" . $data . "s</b>" .
                    "<br/>Warning: <b style='color:orange'>" . $warn . "s</b>" .
                    "<br/>Critical: <b style='color:red'>" . $crit . "s</b>";
+		}
 
-		return "<button class='btn-small btn-block btn$css' rel='tooltip' data-html='true' title=\"" . $perfTip . "\">" . $data . "</button>";
+		return "<button class='btn-small btn-block btn$css' rel='tooltip' data-html='true' title=\"" . $perfTip . "\">" . $data . "" . $dataType . "</button>";
 
 	}
 
@@ -256,26 +318,37 @@ class DashboardController extends Zend_Controller_Action
 		switch ($data) {
 			case '-':
 				$css = '';
+				$dataType = '';
 				break;
 			case ($data == 100 || $data > $warn):
 				$css = '-success';
+				$dataType = '%';
 				break;
 			case ($data <= $warn && $data > 0 && !($data <= $crit)):
 				$css = '-warning';
+				$dataType = '%';
 				break;
 			case 0:
 			case ($data <= $crit && $data > 0):
 				$css = '-danger';
+				$dataType = '%';
 				break;
 			default:
 				$css = '';
+				$dataType = '%';
 		}
 
-		$availTip = "Availability: <b>" . $data . "%</b>" .
+		if ($warn == -1.0) {
+			$css = '';
+			$availTip = '<b>No thresholds set!</b>';
+		} else {
+
+			$availTip = "Availability: <b>" . $data . "%</b>" .
                     "<br/>Warning: <b style='color:orange'>" . $warn . "%</b>" .
                     "<br/>Critical: <b style='color:red'>" . $crit . "%</b>";
+		}
 
-		return "<button class=\"btn-small btn-block btn" . $css . "\" rel='tooltip' data-html='true' title=\"" . $availTip . "\">" . $data . "</button>";
+		return "<button class=\"btn-small btn-block btn" . $css . "\" rel='tooltip' data-html='true' title=\"" . $availTip . "\">" . $data . "" .  $dataType . "</button>";
 
 	}
 }
