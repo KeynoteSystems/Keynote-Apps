@@ -116,14 +116,17 @@ class GraphController extends Zend_Controller_Action
 							case '12002':
 							case '-99200':
 							case '-99100':
+							case '4004':
 								$fillColor = '#FF0000';
 								$symbol = 'triangle';
 								$radius = '5';
+								$errorCode = (string)$dp->txn__error->code;
 								break;
 							default:
 								$fillColor = '#006600';
 								$symbol = 'circle';
 								$radius = '2';
+								$errorCode = 'Success';
 						}
 
 						if ($dp->txn__summary->content__errors == 1 && !$dp->txn__error->code) {
@@ -136,7 +139,7 @@ class GraphController extends Zend_Controller_Action
 						if (isset($spdivideby)) {
 							$dataValue = $dataValue / $spdivideby;
 						}
-						$perfData[] = array('y' => (string)$dataValue, 'marker' => array('radius' => $radius, 'symbol' => $symbol, 'fillColor' => $fillColor));
+						$perfData[] = array('y' => (string)$dataValue, 'errorCode' => $errorCode, 'marker' => array('radius' => $radius, 'symbol' => $symbol, 'fillColor' => $fillColor));
 					}
 				}
 				break;

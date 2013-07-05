@@ -44,7 +44,7 @@
 
          tooltip: {
              formatter: function() {
-                 return '<b>' + this.x + '</b><br/>' + this.series.name + ': ' + this.y + ' <?php echo $this->gUnit ?>';
+                 return '<b>' + this.x + '</b><br/>' + this.series.name + ': ' + this.y + ' <?php echo $this->gUnit ?><br/>Error Code: ' + this.point.errorCode;
              }
          },
 
