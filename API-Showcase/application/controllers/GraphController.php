@@ -41,12 +41,10 @@ class GraphController extends Zend_Controller_Action
 
 		$this->_session->url = $url;
 
-		$slotData = $this->_api->getActiveSlotMetaData();
-
-		foreach ($slotData->product as $a) {
+		foreach ($this->_session->slotData->product as $a) {
 			foreach ($a->slot as $b) {
 				if ($b->slot_id != 1091870 && $b->slot_id != 508374) {
-				$slotIds[$b->slot_alias] = $b->slot_id;
+					$slotIds[$b->slot_alias] = $b->slot_id;
 				}
 			}
 		}
@@ -184,7 +182,7 @@ class GraphController extends Zend_Controller_Action
 					foreach ($datapoint as $dp) {
 						$t = (string)$dp['name'];
 						$time[] = $t;
-												if ($dp->perf_data['value'] == '-') {
+						if ($dp->perf_data['value'] == '-') {
 							$perfDataValue = 0;
 						} else {
 							$perfDataValue = (float)$dp->perf_data['value'];
