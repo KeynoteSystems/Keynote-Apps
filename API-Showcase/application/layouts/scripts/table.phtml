@@ -42,6 +42,20 @@ body {
   <script src="/bootstrap/js/bootstrap.min.js"></script>
   <script src="/js/datatables.js"></script>
   <script>
+  jQuery.extend( jQuery.fn.dataTableExt.oSort, {
+	    "num-html-pre": function ( a ) {
+	        var x = (a == "-") ? 0 : String(a).replace( /<[\s\S]*?>/g, "" );
+	        return parseFloat( x );
+	    },
+
+	    "num-html-asc": function ( a, b ) {
+	        return ((a < b) ? -1 : ((a > b) ? 1 : 0));
+	    },
+
+	    "num-html-desc": function ( a, b ) {
+	        return ((a < b) ? 1 : ((a > b) ? -1 : 0));
+	    }
+	} );
   $(document).ready(function () {
 	  //$('#dataTable').html( '<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="dashboard">' );
       $('#dashboard').dataTable({
@@ -53,40 +67,47 @@ body {
           "sAjaxSource": "/dashboard/tabledata",
           "aoColumnDefs": [{
                   "aTargets": [0],
-                  "sTitle": "Alias",
-                  "sType": "html"
+                  "sTitle": "Alias"
               }, {
                   "aTargets": [1],
                   "sTitle": "5min",
-                  "sWidth": "75"
+                  "sWidth": "75",
+                  "sType" : "num-html"
               }, {
                   "aTargets": [2],
                   "sTitle": "15min",
-                  "sWidth": "75"
+                  "sWidth": "75",
+                  "sType" : "num-html"
               }, {
                   "aTargets": [3],
                   "sTitle": "1hr",
-                  "sWidth": "75"
+                  "sWidth": "75",
+                  "sType" : "num-html"
               }, {
                   "aTargets": [4],
                   "sTitle": "24hrs",
-                  "sWidth": "75"
+                  "sWidth": "75",
+                  "sType" : "num-html"
               }, {
                   "aTargets": [5],
                   "sTitle": "5min",
-                  "sWidth": "75"
+                  "sWidth": "75",
+                  "sType" : "num-html"
               }, {
                   "aTargets": [6],
                   "sTitle": "15min",
-                  "sWidth": "75"
+                  "sWidth": "75",
+                  "sType" : "num-html"
               }, {
                   "aTargets": [7],
                   "sTitle": "1hr",
-                  "sWidth": "75"
+                  "sWidth": "75",
+                  "sType" : "num-html"
               }, {
                   "aTargets": [8],
                   "sTitle": "24hrs",
-                  "sWidth": "75"
+                  "sWidth": "75",
+                  "sType" : "num-html"
               }
 
           ]

@@ -306,11 +306,11 @@ class DashboardController extends Zend_Controller_Action
 			$perfTip = '<b>No thresholds set!</b>';
 		} else {
 			$perfTip = "Performance: <b>" . $data . "s</b>" .
-                   "<br/>Warning: <b style='color:orange'>" . $warn . "s</b>" .
-                   "<br/>Critical: <b style='color:red'>" . $crit . "s</b>";
+                   "<br>Warning: <b style='color:orange'>" . $warn . "s</b>" .
+                   "<br>Critical: <b style='color:red'>" . $crit . "s</b>";
 		}
 
-		return "<button class='btn-small btn-block btn$css' rel='tooltip' data-html='true' title=\"" . $perfTip . "\">" . $data . "" . $dataType . "</button>";
+		return "<button class='btn-small btn-block btn$css' rel='tooltip' data-html='true' title=\"" . htmlentities($perfTip) . "\">" . $data . "" . $dataType . "</button>";
 
 	}
 
@@ -319,6 +319,7 @@ class DashboardController extends Zend_Controller_Action
 			case '-':
 				$css = '';
 				$dataType = '';
+				$data = '-';
 				break;
 			case ($data == 100 || $data > $warn):
 				$css = '-success';
@@ -344,11 +345,11 @@ class DashboardController extends Zend_Controller_Action
 		} else {
 
 			$availTip = "Availability: <b>" . $data . "%</b>" .
-                    "<br/>Warning: <b style='color:orange'>" . $warn . "%</b>" .
-                    "<br/>Critical: <b style='color:red'>" . $crit . "%</b>";
+                    "<br>Warning: <b style='color:orange'>" . $warn . "%</b>" .
+                    "<br>Critical: <b style='color:red'>" . $crit . "%</b>";
 		}
 
-		return "<button class=\"btn-small btn-block btn" . $css . "\" rel='tooltip' data-html='true' title=\"" . $availTip . "\">" . $data . "" .  $dataType . "</button>";
+		return "<button class=\"btn-small btn-block btn" . $css . "\" rel='tooltip' data-html='true' title=\"" . htmlentities($availTip) . "\">" . $data . "" .  $dataType . "</button>";
 
 	}
 }
