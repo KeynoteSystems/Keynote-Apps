@@ -70,7 +70,7 @@ class GraphController extends Zend_Controller_Action
 
 		$this->view->graphType = ucfirst($this->_request->getParam('graphType'));
 
-		$graphData = $this->_api->getGraphData(array($this->_request->getParam('slotId')), $this->_request->getParam('graphType'), $this->_config['graph']['timezone'], 'relative', $nDays, $bSize, $this->_request->getParam('pageComponent'), $this->_request->getParam('am'));
+		$graphData = $this->_api->getGraphDataRelative(array($this->_request->getParam('slotId')), $this->_request->getParam('graphType'), $this->_config['graph']['timezone'], 'relative', $nDays, $bSize, $this->_request->getParam('pageComponent'), $this->_request->getParam('am'));
 
 		switch ($this->_request->getParam('pageComponent')) {
 			case 'U':
