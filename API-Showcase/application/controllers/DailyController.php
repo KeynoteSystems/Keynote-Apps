@@ -372,7 +372,7 @@ class DailyController extends Zend_Controller_Action
 		 * @link http://framework.zend.com/manual/1.12/en/zend.cache.frontends.html
 		 */
 		$frontendOptions = array(
-				'lifetime' => 86400, // cache lifetime of 2 hours
+				'lifetime' => 86400, // cache lifetime of 1 day
 				'automatic_serialization' => false
 		);
 
@@ -429,14 +429,6 @@ class DailyController extends Zend_Controller_Action
 		 * Load previously retrieved slotmetadata from the cache, if the cache is empty
 		 * (never set or timed out) then fetch the data by invoking the API and cache the result.
 		 */
-		/*
-		if (($slotData = $this->_cache->load('slotData_' . Zend_Session::getId())) === false ) {
-
-			$slotData = $api->getActiveSlotMetaData();
-
-			$this->_cache->save($slotData, 'slotData_' . Zend_Session::getId());
-		}
-		*/
 
 		$slotData = $this->_session->slotData;
 
@@ -534,7 +526,13 @@ class DailyController extends Zend_Controller_Action
 			 * transpagelist	: $slotIds; 		the transaction page list build from the slots
 			 */
 
-			$week = $api->getGraphData($slotIds, 'time', $config['graph']['timezone'], 'relative', 604800, 86400, $pageComponents, 'GM');
+			$date = new DateTime();
+			$date->setTime(00, 00);
+			$cDate = $date->format('Y-M-d h:i A');
+			$date->modify('-1 week');
+			$oneWeekAgo  = $date->format('Y-M-d h:i A');
+
+			$week = $api->getGraphDataAbsolute($slotIds, 'time', $config['graph']['timezone'], 'absolute', urlencode($oneWeekAgo), urlencode($cDate), 86400, $pageComponents, 'GM');
 
 			$this->_cache->save($week, $product . '_week_'  . Zend_Session::getId());
 		}
@@ -557,7 +555,12 @@ class DailyController extends Zend_Controller_Action
 			 * transpagelist	: $slotIds; 		the transaction page list build from the slots
 			 */
 
-			$month = $api->getGraphData($slotIds, 'time', $config['graph']['timezone'], 'relative', 2419200, 604800, $pageComponents, 'GM');
+			$date = new DateTime();
+			$date->setTime(00, 00);
+			$cDate = $date->format('Y-M-d h:i A');
+			$date->modify('-28 day');
+			$oneMonthAgo  = $date->format('Y-M-d h:i A');
+			$month = $api->getGraphDataAbsolute($slotIds, 'time', $config['graph']['timezone'], 'absolute', urlencode($oneMonthAgo), urlencode($cDate), 604800, $pageComponents, 'GM');
 
 			$this->_cache->save($month, $product . '_month_'  . Zend_Session::getId());
 		}
