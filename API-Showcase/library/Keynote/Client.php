@@ -75,18 +75,20 @@ class Keynote_Client
 	 * @param string $request The request URL - must be a valid URL
 	 * @return array a decoded json array or a PHP SimpleXML object as the case may be
 	 */
-	protected function _getData($request)
+	protected function _getData($method, $request)
 	{
 		$time = microtime();
 		$time = explode(' ', $time);
 		$time = $time[1] + $time[0];
 		$start = $time;
-		$ch = curl_init($request);
+		$url = $this->api_url . $method . '?api_key=' . $this->api_key . $request;
+		$ch = curl_init($url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);		// return the response string as a return value of curl_exec
 		curl_setopt($ch, CURLOPT_ENCODING, "gzip");			// request a gzip encoding
 		curl_setopt($ch, CURLOPT_HEADER, 0);				// do not include a header in the response
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);	// do not check status of the SSL license
 		curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 60);		// number of seconds to wait for the connection
+		//curl_setopt($ch, CURLOPT_VERBOSE, true);
 
 		/*
 		 * Set the time limit to wait for the response to 90 seconds
@@ -111,7 +113,7 @@ class Keynote_Client
 		 */
 		if ('development' == APPLICATION_ENV) {
 			$logger = Zend_Registry::get('logger');
-			$logger->log($request . ' generated in '.$total_time.' seconds.', 7);
+			$logger->log($url . ' generated in '.$total_time.' seconds.', 7);
 		}
 
 		/*
@@ -146,6 +148,7 @@ class Keynote_Client
 				}
 				break;
 		}
+
 	}
 
 	/**
@@ -167,15 +170,15 @@ class Keynote_Client
 		 * additional parameters
 		 *
 		 */
-		$request = $this->api_url . 'getslotmetadata' .
-    			'?api_key='    . $this->api_key .
-    			'&history='    . $history .
+		$method = 'getslotmetadata';
+
+		$request = '&history='    . $history .
     			'&format='     . $this->format;
 
 		/*
 		 * Calls the internal getData method and return the object returned by that function.
 		 */
-		return $this->_getData($request);
+		return $this->_getData($method, $request);
 	}
 
 	/**
@@ -195,7 +198,7 @@ class Keynote_Client
 	 * @param string $company Pass a not null value to set the scope to the entire company
 	 * @return array an XML Object or an array containing the data
 	 */
-	protected function getSlotMetaData($login = null, $usergroup = null, $agreement = null, $company = null)
+	protected function getSlotMetaData($history = 'n', $login = null, $usergroup = null, $agreement = null, $company = null)
 	{
 		/*
 		 * Construct the API call to getslotmetadata.
@@ -206,19 +209,20 @@ class Keynote_Client
 		 * additional parameters
 		 *
 		 */
-		$request = $this->api_url . 'getslotmetadata' .
-				'?api_key='    . $this->api_key .
-				'&login='      . $login .
-				'&usergroup='  . $usergroup .
-				'&agreement='  . $agreement .
-				'&company='    . $company .
-				'&history=n'   .
-				'&format='     . $this->format;
+
+		$method = 'getslotmetadata';
+
+		$request = '&login='  . $login .
+				'&usergroup=' . $usergroup .
+				'&agreement=' . $agreement .
+				'&company='   . $company .
+				'&history='   . $history .
+				'&format='    . $this->format;
 
 		/*
 		 * Calls the internal getData method and return the object returned by that function.
 		 */
-		return $this->_getData($request);
+		return $this->_getData($method, $request);
 	}
 
 	/**
@@ -240,15 +244,16 @@ class Keynote_Client
 		/*
 		 * Construct the API call to getdashboarddata.
 		 */
-		$request = $this->api_url . 'getdashboarddata' .
-				'?api_key='    . $this->api_key .
-				'&type='       . $type .
-				'&format='     . $this->format;
+
+		$method = 'getdashboarddata';
+
+		$request = '&type=' . $type .
+				'&format='  . $this->format;
 
 		/*
 		 * Calls the internal getData method and return the object returned by that function.
 		 */
-		return $this->_getData($request);
+		return $this->_getData($method, $request);
 	}
 
 	/**
@@ -263,11 +268,11 @@ class Keynote_Client
 	 */
 	public function getAlarmMetaData()
 	{
-		$request = $this->api_url . 'getalarmmetadata' .
-				'?api_key='    . $this->api_key .
-				'&format='     . $this->format;
+		$method = 'getalarmmetadata';
 
-		return $this->_getData($request);
+		$request = '&format=' . $this->format;
+
+		return $this->_getData($method, $request);
 	}
 
 	/**
@@ -291,16 +296,16 @@ class Keynote_Client
 	 * @param array $transpagelist The list of transaction pages to fetch.
 	 * @return array an XML Object or an array containing the data
 	 */
-	public function getGraphData($slotidlist, $graphtype='time', $timezone='GMT', $timemode='relative', $relativehours=86400, $bucket=1800, $pagecomponent = null, $averagemethod='AM', $transpagelist=null)
+	public function getGraphDataRelative($slotidlist, $graphtype='time', $timezone='GMT', $timemode='relative', $relativehours=86400, $bucket=1800, $pagecomponent = null, $averagemethod='AM', $transpagelist=null)
 	{
 		/*
 		 * Convert the slotids in the array into a comma separated string as expected by the API.
 		 */
 		$slots = implode(',', $slotidlist);
 
-		$request = $this->api_url    . 'getgraphdata'.
-				'?api_key='       . $this->api_key .
-				'&slotidlist='    . $slots .
+		$method = 'getgraphdata';
+
+		$request = '&slotidlist=' . $slots .
 				'&graphtype='     . $graphtype .
 				'&timezone='      . $timezone .
 				'&timemode='      . $timemode .
@@ -319,7 +324,40 @@ class Keynote_Client
 			$request .= '&transpagelist=' . $trans;
 		}
 
-		return $this->_getData($request);
+		return $this->_getData($method, $request);
+
+	}
+
+	public function getGraphDataAbsolute($slotidlist, $graphtype='time', $timezone='GMT', $timemode='absolute', $absolutetimestart = null, $absolutetimeend = null, $bucket=1800, $pagecomponent = null, $averagemethod='AM', $transpagelist=null)
+	{
+		/*
+		 * Convert the slotids in the array into a comma separated string as expected by the API.
+		 */
+		$slots = implode(',', $slotidlist);
+
+		$method = 'getgraphdata';
+
+		$request = '&slotidlist='     . $slots .
+				'&graphtype='         . $graphtype .
+				'&timezone='          . $timezone .
+				'&timemode='          . $timemode .
+				'&absolutetimestart=' . $absolutetimestart .
+				'&absolutetimeend='   . $absolutetimeend .
+				'&bucket='            . $bucket .
+				'&pagecomponent='     . $pagecomponent .
+				'&averagemethod='     . $averagemethod .
+				'&format='            . $this->format;
+
+		/*
+		 * If a transpagelist has been provided then add the transpagelist to the request.
+		 * This list also needs to be converted into a comma separated list.
+		 */
+		if ($transpagelist != null) {
+			$trans = implode(',', $transpagelist);
+			$request .= '&transpagelist=' . $trans;
+		}
+
+		return $this->_getData($method, $request);
 
 	}
 }
