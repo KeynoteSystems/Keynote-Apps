@@ -1,8 +1,18 @@
 
+<div class="hero-unit">
+  <h1>Mass Script Creator (MSC)</h1>
+  <p>Bulk creation of 1 page scripts for ApP, TxP & MWP</p>
+</div>
+<div>
+Create comma delimited lines of ScriptName, ActionName and URL e.g.
+<pre>
+Apple,Appe Store HomePage,http://www.apple.com/uk/thestore
+BBC,BBC News,http://news.bbc.co.uk/
+MS,Microsoft HomePage,http://www.microsoft.com
+etc.
+</pre>
+</div>
 <form enctype="multipart/form-data" action="/msc/generate" method="post" class="form-horizontal">
-    <fieldset>
-        <legend>Mass Script Creator</legend>
-
         <div class="control-group">
             <label class="control-label" for="scriptType">Script Type</label>
             <div class="controls">
@@ -29,6 +39,4 @@
                 <button type="submit" class="btn btn-info">Generate Scripts</button>
             </div>
         </div>
-
-    </fieldset>
 </form>
