@@ -114,7 +114,7 @@ class GraphController extends Zend_Controller_Action
 		switch ($this->view->graphType) {
 			case 'Scatter':
 				$this->view->hcGraphType = 'scatter';
-				$this->view->step = 8;
+				$this->view->step = 30;
 				$this->view->y = 15;
 				$this->view->title = 'Scatter Plot';
 				foreach ($graphData->list as $datapoint) {
