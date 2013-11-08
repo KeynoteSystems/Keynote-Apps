@@ -64,7 +64,7 @@ class Keynote_Client
 	 */
 	public $format = 'json';
 	
-	public $basepageonly = false;
+	public $basepageonly = 'false';
 
 	/**
 	 * Processes a request to the Keynote API and returns an array or xml object.

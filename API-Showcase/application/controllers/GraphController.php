@@ -66,11 +66,11 @@ class GraphController extends Zend_Controller_Action
 			//$nDays = 3600;
 			$nDays = $this->_request->getParam('Days');
 			$bSize = 300;
-			$this->_api->basePageOnly = 'true';
+			$this->_api->basepageonly = 'true';
 		} else {
 			$nDays = $this->_request->getParam('Days');
 			$bSize = 3600;
-			$basePageOnly = 'false';
+			$this->_api->basepageonly = 'false';
 		}
 
 		$this->view->currentDate = date('Y-m-d');
