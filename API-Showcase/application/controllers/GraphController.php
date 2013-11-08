@@ -54,9 +54,17 @@ class GraphController extends Zend_Controller_Action
 
 	public function generateAction()
 	{
+		/*
+		header('Content-type: application/json');
+	    
+	    $this->_helper->layout->disableLayout();
+
+		$this->_helper->viewRenderer->setNoRender();
+		*/
+
 		if ($this->_request->getParam('graphType') == 'scatter') {
-			$nDays = 3600;
-			$bSize = 300;
+			//$nDays = 3600;
+			//$bSize = 300;
 			$basePageOnly = 'true';
 		} else {
 			$nDays = $this->_request->getParam('Days');
@@ -136,6 +144,7 @@ class GraphController extends Zend_Controller_Action
 						}
 
 						$dataValue = $dp->txn__summary->$sp;
+
 						if (isset($spdivideby)) {
 							$dataValue = $dataValue / $spdivideby;
 						}
@@ -161,7 +170,9 @@ class GraphController extends Zend_Controller_Action
 						if (isset($divideby)) {
 							$perfDataValue = $perfDataValue / $divideby;
 						}
+						
 						$perfData[] = array($t, (string)number_format($perfDataValue,2));
+						//$perfData[] = array($t, 'y' => (string)number_format($perfDataValue,2), 'errorCode' => 0);
 
 						if ($dp->avail_data['value'] == '-') {
 							$availDataValue = 0;
@@ -201,6 +212,15 @@ class GraphController extends Zend_Controller_Action
 					break;
 				}
 		}
+
+		/*
+		echo json_encode(array('step' => $this->view->step,
+		'title' => (string)$this->view->title,
+		'pagecomponent' => $this->view->pageComponent,
+		'unit' => $this->view->gUnit,
+		'graphtype' => $this->view->graphType,
+		'hcgraphtype' => $this->view->hcGraphType, 'x' =>$time, 'data' => $perfData, 'y' => $this->view->y), JSON_NUMERIC_CHECK);
+		*/
 
 		$this->view->xTime = json_encode($time);
 		$this->view->perfDataPoints = json_encode($perfData, JSON_NUMERIC_CHECK);
