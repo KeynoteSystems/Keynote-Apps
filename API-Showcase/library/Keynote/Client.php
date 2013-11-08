@@ -315,6 +315,7 @@ class Keynote_Client
 				'&bucket='        . $bucket .
 				'&pagecomponent=' . $pagecomponent .
 				'&averagemethod=' . $averagemethod .
+				'&basepageonly='  . $this->basepageonly . 
 				'&format='        . $this->format;
 
 		/*
@@ -324,7 +325,6 @@ class Keynote_Client
 		if ($transpagelist != null) {
 			$trans = implode(',', $transpagelist);
 			$request .= '&transpagelist=' . $trans;
-			$request .= '&basepageonly=' . $this->basepageonly;
 		}
 
 		return $this->_getData($method, $request);
