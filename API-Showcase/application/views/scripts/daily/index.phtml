@@ -151,7 +151,7 @@ foreach ($this->perfData as $a => $p) {
 			// access the performance data in the display index order
         	$pd = $p[$ix];
         	// set the warning / critical colors only if there is a valid value
-            if ($pd['perf'] != '-' && $getAvg != '-') {
+            if ($pd['perf'] != '' && $getAvg != '') {
 				// Compute the variance of this value from the average
 				$avgVar = (($pd['perf'] - $getAvg) / $getAvg) * 100;
 
