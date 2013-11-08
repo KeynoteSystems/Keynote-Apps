@@ -124,7 +124,7 @@ class DashboardController extends Zend_Controller_Action
 			$slotId = $this->_getParam('slotid');
 		}
 
-		$graph = $this->_api->getGraphDataRelative(array($slotId), "time", $this->_config['graph']['timezone'], "relative", 43200, 3600, null, 'GM', array($slotId));
+		$graph = $this->_api->getGraphDataRelative(array($slotId), "time", $this->_config['graph']['timezone'], "relative", 43200, 3600, null, 'GM');
 
 		foreach ($graph->measurement as $slot) {
 			$a = $slot->alias;
