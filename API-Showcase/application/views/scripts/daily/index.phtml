@@ -199,10 +199,10 @@ foreach ($this->perfData as $a => $p) {
 			$pd = $p[$ix];
 
             $cellColor = '';
-            if ($pd['avail'] < $this->avail_warn && $pd['avail'] != '-') {
+            if ($pd['avail'] < $this->avail_warn && $pd['avail'] != '') {
                 $cellColor = $warnCellColor;
             }
-            if ($pd['avail'] < $this->avail_crit && $pd['avail'] != '-') {
+            if ($pd['avail'] < $this->avail_crit && $pd['avail'] != '') {
                 $cellColor = $critCellColor;
             }
             echo '<td class="right" style="text-align: center; background-color:' . $cellColor . '">' . $pd['avail'];
@@ -245,7 +245,7 @@ foreach ($this->perfData as $a => $p) {
 			$pd = $p[$ix];
 
             $cellColor = '';
-            if ($pd['objects'] != '-' && $getAvg != '-') {
+            if ($pd['objects'] != '' && $getAvg != '') {
 				$avgVar = (($pd['objects'] - $getAvg) / $getAvg) * 100;
 
                 if ($avgVar >= 15) {
