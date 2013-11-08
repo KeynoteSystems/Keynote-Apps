@@ -292,7 +292,7 @@ foreach ($this->perfData as $a => $p) {
 			$pd = $p[$ix];
 
             $cellColor = '';
-            if ($pd['bytes'] != '-' && $getAvg != '-') {
+            if ($pd['bytes'] != '' && $getAvg != '') {
 				$avgVar = (($pd['bytes'] - $getAvg) / $getAvg) * 100;
                 if ($avgVar >= 15) {
                     $cellColor = $warnCellColor;
