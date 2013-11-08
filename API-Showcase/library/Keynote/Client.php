@@ -63,6 +63,8 @@ class Keynote_Client
 	 * @var string
 	 */
 	public $format = 'json';
+	
+	public $basepageonly = false;
 
 	/**
 	 * Processes a request to the Keynote API and returns an array or xml object.
@@ -322,6 +324,7 @@ class Keynote_Client
 		if ($transpagelist != null) {
 			$trans = implode(',', $transpagelist);
 			$request .= '&transpagelist=' . $trans;
+			$request .= '&basepageonly=' . $this->basepageonly;
 		}
 
 		return $this->_getData($method, $request);
