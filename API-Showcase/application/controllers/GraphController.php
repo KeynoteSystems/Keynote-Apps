@@ -64,6 +64,7 @@ class GraphController extends Zend_Controller_Action
 
 		if ($this->_request->getParam('graphType') == 'scatter') {
 			//$nDays = 3600;
+			$nDays = $this->_request->getParam('Days');
 			//$bSize = 300;
 			$basePageOnly = 'true';
 		} else {
